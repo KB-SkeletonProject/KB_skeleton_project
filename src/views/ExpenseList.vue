@@ -1,14 +1,27 @@
 <script setup>
-// ✅ 기본 Vue 및 라이브러리 임포트
+// 기본 Vue 및 라이브러리 임포트
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 
-// ✅ 모달 컴포넌트 임포트
+// 모달 컴포넌트 임포트
 import TransactionEditModal from '../components/TransactionEditModal.vue';
 import FilterModal from '../components/FilterModal.vue';
 import TransactionDetailModal from '../components/TransactionDetailModal.vue';
 import TransactionModal from '../components/TransactionModal.vue';
+
+// 라우터 이동 관련
+const router = useRouter();
+const goToHome = () => router.push('/home');
+const mypageClick = () => router.push('/myPage');
+const logout = () => {
+  alert('안녕히가세요!');
+
+  localStorage.removeItem('loggedInUserId');
+  localStorage.removeItem('loggedInUserInfo');
+
+  router.push('/');
+};
 
 // 페이지네이션
 const currentPage = ref(1);
@@ -30,19 +43,6 @@ const goToPage = (page) => {
   if (page >= 1 && page <= totalPages.value) {
     currentPage.value = page;
   }
-};
-
-// ✅ 라우터 이동 관련
-const router = useRouter();
-const goToHome = () => router.push('/home');
-const mypageClick = () => router.push('/myPage');
-const logout = () => {
-  alert('안녕히가세요!');
-
-  localStorage.removeItem('loggedInUserId');
-  localStorage.removeItem('loggedInUserInfo');
-
-  router.push('/');
 };
 
 // ✅ 다크 모드

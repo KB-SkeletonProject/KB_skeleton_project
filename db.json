@@ -11,16 +11,6 @@
       "goalSavings": "54"
     },
     {
-      "id": "fb5c",
-      "userId": "aaa@naver.com",
-      "password": "aaaaaaaa",
-      "name": "aaa",
-      "age": 4,
-      "gender": "여성",
-      "userImg": "",
-      "goalSavings": 10
-    },
-    {
       "id": "aa31",
       "userId": "asd@naver.com",
       "password": "aaaaaaaa",
@@ -49,6 +39,15 @@
       "gender": "여성",
       "userImg": "",
       "goalSavings": 10
+    },
+    {
+      "id": "ada0",
+      "userId": "aaa@naver.com",
+      "password": "aaaaaaaaa",
+      "name": "서은진",
+      "age": "2",
+      "gender": "여성",
+      "goalSavings": 0
     }
   ],
   "ageArea": [
@@ -501,7 +500,7 @@
       "typeid": 1,
       "categoryid": 2,
       "date": "2025-04-10",
-      "amount": 100000000,
+      "amount": 1000000,
       "tendencyid": 3,
       "payment": 4,
       "memo": "ㄴㄴ",
@@ -1178,6 +1177,30 @@
       "payment": 4,
       "memo": "ㅇㅇ",
       "ageid": "3"
+    },
+    {
+      "id": "b037",
+      "userid": "1111",
+      "typeid": 1,
+      "categoryid": 1,
+      "date": "2025-04-11",
+      "amount": 100000,
+      "tendencyid": 3,
+      "payment": 4,
+      "memo": "",
+      "ageid": 2
+    },
+    {
+      "id": "9ab7",
+      "userid": "1111",
+      "typeid": 1,
+      "categoryid": 1,
+      "date": "2025-04-11",
+      "amount": 10000000,
+      "tendencyid": 3,
+      "payment": 4,
+      "memo": "",
+      "ageid": 2
     }
   ],
   "tendency": [

@@ -23,7 +23,7 @@ const applyFilter = (newSelection) => {
   closeFilterModal();
 };
 
-// 헤더 및 라우터 설정
+// 라우터 설정
 const router = useRouter();
 const isDarkMode = ref(false);
 const toggleDarkMode = () => {
@@ -38,13 +38,13 @@ const logout = () => {
   router.push('/');
 };
 
-// 카테고리 이름 매핑 함수
+// 카테고리 이름을 id로부터 매핑 함수
 const getCategoryNameById = (id) => {
   const category = categoryList.value.find((cat) => cat.id === id);
   return category ? category.name : '';
 };
 
-// 데이터 로딩 및 계산
+// 데이터 불러오기 및 분석 계산
 onMounted(async () => {
   try {
     const loggedInUserId = localStorage.getItem('loggedInUserId');
@@ -73,7 +73,7 @@ onMounted(async () => {
     const ageGroup = currentUser.value.age;
     const categoryIds = categoryList.value.map((cat) => cat.id);
 
-    // 지출 데이터 초기화
+    // 초기화
     mySpending.value = {};
     avgSpending.value = {};
     categoryIds.forEach((id) => {
@@ -96,10 +96,12 @@ onMounted(async () => {
     );
 
     categoryIds.forEach((id) => {
+      // 내 지출 합산
       mySpending.value[id] = myExpenses
         .filter((m) => m.categoryid === id)
         .reduce((sum, cur) => sum + cur.amount, 0);
 
+      // 같은 연령대 평균 지출 계산
       const groupAmounts = sameAgeExpenses
         .filter((m) => m.categoryid === id)
         .map((m) => m.amount);
@@ -130,6 +132,7 @@ const filteredAvgSpending = computed(() =>
 
 <template>
   <div class="dashboard">
+    <!-- 헤더  -->
     <header class="dashboardHeader">
       <h1 class="dashboardTitle">
         <img
@@ -150,29 +153,20 @@ const filteredAvgSpending = computed(() =>
       </div>
     </header>
 
+    <!-- 연령대 소비 분석 영역  -->
     <div class="age-expense-analysis">
-      <div class="header"></div>
-
       <ExpenseChart
         :labels="filteredLabels"
         :my-data="filteredMySpending"
         :avg-data="filteredAvgSpending"
         :isDarkMode="isDarkMode"
       />
-
-      <!-- <CategoryFilterModal
-        v-if="isFilterModalOpen"
-        :isOpen="isFilterModalOpen"
-        :categories="allLabels"
-        :selectedCategories="selectedCategories"
-        @close="closeFilterModal"
-        @apply="applyFilter"
-      /> -->
     </div>
   </div>
 </template>
 
 <style scoped>
+/* 기본 대시보드 스타일  */
 .dashboard {
   padding: 2rem;
   margin: 0;
@@ -181,52 +175,20 @@ const filteredAvgSpending = computed(() =>
   box-sizing: border-box;
   color: black;
 }
+
 .dark .dashboard {
   background: linear-gradient(to bottom, #121212, #121212);
   color: #1a1a2e;
 }
+
+/* 분석 섹션  */
 .age-expense-analysis {
   padding: 20px;
   max-width: 1200px;
   margin: auto;
 }
 
-.header {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 24px;
-  padding-right: 20px;
-}
-.chart-title {
-  font: var(--ng-bold-24);
-  color: var(--primary-color);
-}
-
-.filter-button {
-  padding: 8px 16px;
-  border: 1px solid var(--primary-color);
-  border-radius: 8px;
-  background-color: white;
-  color: var(--primary-color);
-  font: var(--ng-reg-14);
-  cursor: pointer;
-}
-
 /* 헤더  */
-.body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  background-color: var(--background-color);
-}
-
-.dark .dashboard,
-.dark,
-.dark .body {
-  background-color: #121212;
-  color: black;
-}
-
 .dashboardHeader {
   display: flex;
   justify-content: space-between;
@@ -256,16 +218,28 @@ const filteredAvgSpending = computed(() =>
   gap: 1rem;
 }
 
-/* 다크모드 버튼 */
-.darkModeButton {
-  padding: 8px 12px;
-  font-size: 1.2rem;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
+.header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 24px;
+  padding-right: 20px;
+}
+.chart-title {
+  font: var(--ng-bold-24);
+  color: var(--primary-color);
+}
+
+.filter-button {
+  padding: 8px 16px;
+  border: 1px solid var(--primary-color);
+  border-radius: 8px;
+  background-color: white;
+  color: var(--primary-color);
+  font: var(--ng-reg-14);
   cursor: pointer;
 }
 
-/* 마이페이지 버튼 */
+/* 공통 버튼 스타일 */
 .mypageButton {
   background-color: rgb(254, 235, 253);
   border: 1px solid rgb(251, 209, 251);
@@ -290,7 +264,6 @@ const filteredAvgSpending = computed(() =>
   margin-right: 20px;
 }
 
-/* 새 거래추가 버튼 */
 .inputValue {
   background-color: rgb(254, 235, 253);
   border: 1px solid rgb(251, 209, 251);
@@ -301,6 +274,23 @@ const filteredAvgSpending = computed(() =>
   transition: all 0.3s ease;
   font: var(--ng-reg-18);
   color: #333;
+}
+
+/* 다크모드  */
+
+.dark .dashboard,
+.dark,
+.dark .body {
+  background-color: #121212;
+  color: black;
+}
+
+.darkModeButton {
+  padding: 8px 12px;
+  font-size: 1.2rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  cursor: pointer;
 }
 .dark .age-expense-analysis {
   /* background: linear-gradient(to bottom, #1a1a1a, #121212); */
@@ -317,12 +307,10 @@ const filteredAvgSpending = computed(() =>
   color: #f9a8d4;
 }
 
-/* 차트 배경이 흰색이라면 다크모드용으로 투명 또는 어두운 배경 처리 */
 .dark canvas {
   background-color: transparent !important;
 }
 
-/* 모달 스타일에 다크 테마 적용 시 필요한 예시 */
 .dark .modal {
   background-color: #222;
   color: #fff;
