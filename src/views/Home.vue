@@ -193,6 +193,15 @@
         <CategoryPieChart :categorySpending="categorySpending" />
       </div>
     </div>
+    <button class="add-button" @click="openModal">
+      <i class="fa-solid fa-plus"></i>
+    </button>
+    <TransactionModal
+      v-if="isTransactionModalOpen"
+      :isOpen="isTransactionModalOpen"
+      @close="closeTransactionModal"
+      @add="handleAddTransaction"
+    />
   </div>
 </template>
 
@@ -470,6 +479,22 @@ const piggyMessage = computed(() => {
 </script>
 
 <style scoped>
+.add-button {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  background-color: var(--primary-color);
+  color: var(--text-white);
+  border: none;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .blink {
   animation: blinkAnim 3s infinite;
   transform-origin: center center;

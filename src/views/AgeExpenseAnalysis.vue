@@ -2,20 +2,24 @@
 import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import ExpenseChart from '../components/ExpenseChart.vue';
-import { useRouter } from 'vue-router';
+import CategoryFilterModal from '../components/CategoryFilterModal.vue';
 
-// 상태 변수
-const selectedCategories = ref([]);
+const allLabels = [
+  '식사/카페',
+  '배달/간식',
+  '쇼핑',
+  '교통/차량',
+  '주거/관리',
+  '건강/병원',
+  '취미/여가',
+  '구독서비스',
+  '여행/외출',
+  '기타지출',
+];
+
+//  필터 모달 제어
+const selectedCategories = ref([...allLabels]);
 const isFilterModalOpen = ref(false);
-const isTransactionModalOpen = ref(false);
-const currentUser = ref(null);
-const moneyData = ref([]);
-const userList = ref([]);
-const categoryList = ref([]);
-const mySpending = ref({});
-const avgSpending = ref({});
-
-// 모달 제어 함수
 const openFilterModal = () => (isFilterModalOpen.value = true);
 const closeFilterModal = () => (isFilterModalOpen.value = false);
 const applyFilter = (newSelection) => {
@@ -23,25 +27,10 @@ const applyFilter = (newSelection) => {
   closeFilterModal();
 };
 
-// 라우터 설정
-const router = useRouter();
-const isDarkMode = ref(false);
-const toggleDarkMode = () => {
-  isDarkMode.value = !isDarkMode.value;
-  document.documentElement.classList.toggle('dark', isDarkMode.value);
-};
-const goToHome = () => router.push('/home');
-const mypageClick = () => router.push('/myPage');
-const logout = () => {
-  alert('로그아웃되었습니다.');
-  localStorage.removeItem('loggedInUserId');
-  router.push('/');
-};
-
 // 카테고리 이름을 id로부터 매핑 함수
 const getCategoryNameById = (id) => {
-  const category = categoryList.value.find((cat) => cat.id === id);
-  return category ? category.name : '';
+  const found = categoryList.value.find((cat) => cat.id === id);
+  return found ? found.name : '';
 };
 
 // 데이터 불러오기 및 분석 계산
@@ -50,7 +39,6 @@ onMounted(async () => {
     const loggedInUserId = localStorage.getItem('loggedInUserId');
     if (!loggedInUserId) {
       alert('로그인이 필요합니다.');
-      router.push('/login');
       return;
     }
 
@@ -62,13 +50,10 @@ onMounted(async () => {
 
     moneyData.value = moneyRes.data;
     userList.value = userRes.data;
-    categoryList.value = categoryRes.data.filter((cat) => cat.id >= 6);
+    categoryList.value = categoryRes.data;
 
     currentUser.value = userList.value.find((u) => u.id === loggedInUserId);
-    if (!currentUser.value) {
-      alert('사용자 정보를 찾을 수 없습니다.');
-      return;
-    }
+    if (!currentUser.value) return;
 
     const ageGroup = currentUser.value.age;
     const categoryIds = categoryList.value.map((cat) => cat.id);
@@ -87,12 +72,12 @@ onMounted(async () => {
       (m) => m.userid === loggedInUserId && m.typeid === 2
     );
 
-    const sameAgeUserIds = userList.value
-      .filter((user) => user.age === ageGroup)
-      .map((user) => user.id);
+    const sameAgeUsers = userList.value
+      .filter((u) => u.age === ageGroup)
+      .map((u) => u.id);
 
-    const sameAgeExpenses = moneyData.value.filter(
-      (m) => sameAgeUserIds.includes(m.userid) && m.typeid === 2
+    const ageGroupExpenses = moneyData.value.filter(
+      (m) => sameAgeUsers.includes(m.userid) && m.typeid === 2
     );
 
     categoryIds.forEach((id) => {
@@ -106,28 +91,56 @@ onMounted(async () => {
         .filter((m) => m.categoryid === id)
         .map((m) => m.amount);
 
-      avgSpending.value[id] = groupAmounts.length
-        ? Math.round(
-            groupAmounts.reduce((a, b) => a + b, 0) / groupAmounts.length
-          )
-        : 0;
+      avgSpending.value[index] =
+        groupValues.length > 0
+          ? Math.round(
+              groupValues.reduce((a, b) => a + b, 0) / groupValues.length
+            )
+          : 0;
     });
   } catch (err) {
     console.error('데이터 불러오기 오류:', err);
-    alert('데이터를 불러오는 중 오류가 발생했습니다.');
   }
 });
 
 // 필터링된 데이터 계산
 const filteredLabels = computed(() =>
-  selectedCategories.value.map((id) => getCategoryNameById(id))
+  allLabels.filter((label) => selectedCategories.value.includes(label))
 );
 const filteredMySpending = computed(() =>
-  selectedCategories.value.map((id) => mySpending.value[id] || 0)
+  allLabels
+    .map((label, i) =>
+      selectedCategories.value.includes(label) ? mySpending.value[i] : null
+    )
+    .filter((v) => v !== null)
 );
 const filteredAvgSpending = computed(() =>
-  selectedCategories.value.map((id) => avgSpending.value[id] || 0)
+  allLabels
+    .map((label, i) =>
+      selectedCategories.value.includes(label) ? avgSpending.value[i] : null
+    )
+    .filter((v) => v !== null)
 );
+
+//  헤더
+import { useRouter } from 'vue-router';
+const router = useRouter();
+const isDarkMode = ref(false);
+
+const toggleDarkMode = () => {
+  isDarkMode.value = !isDarkMode.value;
+  document.documentElement.classList.toggle('dark', isDarkMode.value);
+};
+const goToHome = () => router.push('/home');
+const mypageClick = () => router.push('/myPage');
+const logout = () => {
+  alert('안녕히가세요!');
+
+  localStorage.removeItem('loggedInUserId');
+  localStorage.removeItem('loggedInUserInfo');
+
+  router.push('/');
+};
 </script>
 
 <template>
@@ -162,6 +175,27 @@ const filteredAvgSpending = computed(() =>
         :isDarkMode="isDarkMode"
       />
     </div>
+  </div>
+
+  <div class="age-expense-analysis">
+    <div class="header">
+      <button @click="openFilterModal" class="filter-button">카테고리</button>
+    </div>
+
+    <ExpenseChart
+      :labels="filteredLabels"
+      :my-data="filteredMySpending"
+      :avg-data="filteredAvgSpending"
+    />
+
+    <CategoryFilterModal
+      v-if="isFilterModalOpen"
+      :isOpen="isFilterModalOpen"
+      :categories="allLabels"
+      :selectedCategories="selectedCategories"
+      @close="closeFilterModal"
+      @apply="applyFilter"
+    />
   </div>
 </template>
 
@@ -203,7 +237,7 @@ const filteredAvgSpending = computed(() =>
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 32px;
+  font-size: 24px;
   font-weight: bold;
 }
 .iconImage {
@@ -272,7 +306,7 @@ const filteredAvgSpending = computed(() =>
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  font: var(--ng-reg-18);
+  font-weight: 600;
   color: #333;
 }
 

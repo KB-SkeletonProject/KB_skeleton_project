@@ -4,7 +4,40 @@
       <h2 class="title">회원가입</h2>
       <form @submit.prevent="handleSignUp">
         <label class="label-text">아이디</label>
-        <input type="email" placeholder="example@email.com" v-model="email" />
+        <div class="input-with-button">
+          <input
+            type="email"
+            placeholder="example@email.com"
+            v-model="email"
+            :readonly="emailChecked"
+          />
+          <button type="button" @click="checkDuplicateEmail" class="check-btn">
+            중복 확인
+          </button>
+        </div>
+        <!-- <p
+          v-if="emailChecked !== null"
+          :class="emailChecked ? 'valid' : 'invalid'"
+        >
+          {{
+            emailChecked
+              ? '사용 가능한 이메일입니다!'
+              : '이미 사용 중인 이메일입니다.'
+          }}
+        </p> -->
+
+        <p
+          v-if="emailMessage"
+          :class="
+            emailChecked === true
+              ? 'valid'
+              : emailChecked === false
+              ? 'invalid'
+              : 'warning'
+          "
+        >
+          {{ emailMessage }}
+        </p>
 
         <label class="label-text">이름</label>
         <input type="text" placeholder="이름을 입력하세요" v-model="name" />
@@ -90,6 +123,9 @@ const gender = ref('');
 const showPassword = ref(false);
 const showConfirm = ref(false);
 
+const emailChecked = ref(null); // 중복 확인 결과 저장
+const emailMessage = ref('');
+
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
 };
@@ -106,7 +142,41 @@ const passwordMatch = computed(() => {
   );
 });
 
+const checkDuplicateEmail = async () => {
+  // 이메일 입력값이 비어 있으면 메시지 출력
+  if (!email.value) {
+    emailChecked.value = null;
+    emailMessage.value = '아이디를 입력해주세요.';
+    return;
+  }
+
+  // 이메일 형식이 잘못된 경우
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email.value)) {
+    emailChecked.value = null;
+    emailMessage.value = '이메일 형식에 맞춰서 입력해주세요.';
+    return;
+  }
+
+  try {
+    const response = await axios.get('http://localhost:3000/user');
+    const exists = response.data.some((user) => user.userId === email.value);
+    emailChecked.value = !exists;
+    emailMessage.value = exists
+      ? '이미 사용 중인 이메일입니다.'
+      : '사용 가능한 이메일입니다!';
+  } catch (error) {
+    console.error('중복 확인 실패:', error);
+    alert('중복 확인 중 오류가 발생했습니다.');
+  }
+};
+
 const handleSignUp = async () => {
+  if (!emailChecked.value) {
+    alert('이메일 중복 확인을 해주세요.');
+    return;
+  }
+
   if (!passwordMatch.value) {
     alert('비밀번호가 일치하지 않습니다.');
     return;
@@ -143,6 +213,7 @@ const handleSignUp = async () => {
 </script>
 
 <style scoped>
+/* 기존 스타일 유지 + 중복 확인 스타일 추가 */
 .signup-container {
   position: fixed;
   top: 50%;
@@ -165,6 +236,42 @@ const handleSignUp = async () => {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
+.input-with-button {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.input-with-button input {
+  flex: 1;
+}
+
+.check-btn {
+  height: auto;
+  cursor: pointer;
+  margin-bottom: 20px;
+  background-color: #ffb6dc;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.valid {
+  color: green;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.invalid {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+/* 이하 기존 스타일 유지 */
 .title {
   text-align: center;
   margin-bottom: 30px;
@@ -203,6 +310,7 @@ select {
   color: #888;
   cursor: pointer;
   font-size: 14px;
+  margin-bottom: 20px;
 }
 
 .match {
@@ -282,5 +390,22 @@ select {
 
 .login-link:hover {
   text-decoration: underline;
+}
+.warning {
+  color: #f0ad4e;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.valid {
+  color: green;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.invalid {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
 }
 </style>

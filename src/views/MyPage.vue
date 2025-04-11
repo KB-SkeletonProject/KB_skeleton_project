@@ -66,6 +66,7 @@ const confirmDelete = async () => {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('loggedInUserInfo');
+      localStorage.removeItem('loggedInUserId');
       router.push('/login');
     } else {
       alert('회원 탈퇴에 실패했습니다.');
@@ -163,7 +164,11 @@ const confirmDelete = async () => {
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+<<<<<<< HEAD
  font: var(--ng-reg-18);
+=======
+  font:var(--ng-reg-18);
+>>>>>>> f73f45f904cd79ba1c0e1a8374687557c0f67838
   color: #333;
 }
 
@@ -247,7 +252,11 @@ const confirmDelete = async () => {
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+<<<<<<< HEAD
   font: var(--ng-reg-18);
+=======
+  font:var(--ng-reg-18);
+>>>>>>> f73f45f904cd79ba1c0e1a8374687557c0f67838
   color: #333;
 }
 

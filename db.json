@@ -8,7 +8,7 @@
       "age": 2,
       "gender": "남성",
       "userImg": "",
-      "goalSavings": "54"
+      "goalSavings": "88"
     },
     {
       "id": "aa31",
@@ -41,13 +41,13 @@
       "goalSavings": 10
     },
     {
-      "id": "ada0",
-      "userId": "aaa@naver.com",
-      "password": "aaaaaaaaa",
-      "name": "서은진",
-      "age": "2",
-      "gender": "여성",
-      "goalSavings": 0
+      "id": "ff81",
+      "userId": "ee@naver.com",
+      "password": "eeeeeeee",
+      "name": "ee",
+      "age": "3",
+      "gender": "남성",
+      "goalSavings": "58"
     }
   ],
   "ageArea": [
@@ -217,16 +217,6 @@
       "userid": "ff81",
       "categoryid": 13,
       "deletedAt": null
-    },
-    {
-      "id": "4da4",
-      "day": 12,
-      "description": "11",
-      "amount": 11,
-      "notify": false,
-      "userid": "ff81",
-      "categoryid": 13,
-      "deletedAt": null
     }
   ],
   "money": [
@@ -234,9 +224,9 @@
       "id": "1",
       "userid": "1111",
       "typeid": 1,
-      "categoryid": 2,
+      "categoryid": 3,
       "date": "2025-04-10",
-      "amount": 5000000,
+      "amount": 50000,
       "tendencyid": 3,
       "payment": 4,
       "memo": "아부지 용돈",
@@ -253,18 +243,6 @@
       "payment": 1,
       "memo": "학원 등록비",
       "ageid": 2
-    },
-    {
-      "id": "3",
-      "userid": "1111",
-      "typeid": 2,
-      "categoryid": 10,
-      "date": "2025-04-01",
-      "amount": 200000,
-      "tendencyid": 1,
-      "payment": 2,
-      "memo": "학원 등록비",
-      "ageid": 1
     },
     {
       "id": "3",
@@ -492,18 +470,6 @@
       "tendencyid": 3,
       "payment": 4,
       "memo": "dd",
-      "ageid": 2
-    },
-    {
-      "id": "0856",
-      "userid": "1111",
-      "typeid": 1,
-      "categoryid": 2,
-      "date": "2025-04-10",
-      "amount": 1000000,
-      "tendencyid": 3,
-      "payment": 4,
-      "memo": "ㄴㄴ",
       "ageid": 2
     },
     {
@@ -1095,91 +1061,19 @@
       "ageid": 2
     },
     {
-      "id": "7cd5",
-      "userid": "ff81",
-      "typeid": 1,
-      "categoryid": 1,
-      "date": "2025-04-11",
-      "amount": 100000000,
-      "tendencyid": 3,
-      "payment": 4,
-      "memo": "ㅇㅇ",
-      "ageid": "3"
-    },
-    {
-      "id": "ec28",
-      "userid": "ff81",
-      "typeid": 2,
-      "categoryid": 7,
-      "date": "2025-04-11",
-      "amount": 10000000,
-      "tendencyid": 1,
-      "payment": 3,
-      "memo": "",
-      "ageid": "3"
-    },
-    {
-      "id": "bf1f",
-      "userid": "ff81",
+      "id": "23f7",
+      "userid": "1111",
       "typeid": 2,
       "categoryid": 6,
-      "date": "2025-04-11",
-      "amount": 900000000,
-      "tendencyid": 1,
-      "payment": 1,
-      "memo": "ㅇㅇ",
-      "ageid": "3"
-    },
-    {
-      "id": "2951",
-      "userid": "ff81",
-      "typeid": 1,
-      "categoryid": 1,
-      "date": "2025-04-11",
-      "amount": 9,
-      "tendencyid": 3,
-      "payment": 4,
+      "date": "2025-03-07",
+      "amount": 187700,
+      "tendencyid": 2,
+      "payment": 3,
       "memo": "",
-      "ageid": "3"
+      "ageid": 2
     },
     {
-      "id": "cda4",
-      "userid": "ff81",
-      "typeid": 1,
-      "categoryid": 1,
-      "date": "2025-04-11",
-      "amount": 900000000,
-      "tendencyid": 3,
-      "payment": 4,
-      "memo": "ㅇㅇ",
-      "ageid": "3"
-    },
-    {
-      "id": "5a6e",
-      "userid": "ff81",
-      "typeid": 1,
-      "categoryid": 1,
-      "date": "2025-04-11",
-      "amount": 50000000,
-      "tendencyid": 3,
-      "payment": 4,
-      "memo": "ㅇㅇ",
-      "ageid": "3"
-    },
-    {
-      "id": "ff7d",
-      "userid": "ff81",
-      "typeid": 1,
-      "categoryid": 1,
-      "date": "2025-04-11",
-      "amount": 800000000,
-      "tendencyid": 3,
-      "payment": 4,
-      "memo": "ㅇㅇ",
-      "ageid": "3"
-    },
-    {
-      "id": "b037",
+      "id": "d96b",
       "userid": "1111",
       "typeid": 1,
       "categoryid": 1,
@@ -1187,19 +1081,55 @@
       "amount": 100000,
       "tendencyid": 3,
       "payment": 4,
-      "memo": "",
+      "memo": "알바비",
       "ageid": 2
     },
     {
-      "id": "9ab7",
+      "id": "9749",
       "userid": "1111",
       "typeid": 1,
       "categoryid": 1,
       "date": "2025-04-11",
-      "amount": 10000000,
+      "amount": 1000000,
+      "tendencyid": 3,
+      "payment": 4,
+      "memo": "알바비",
+      "ageid": 2
+    },
+    {
+      "id": "b906",
+      "userid": "1111",
+      "typeid": 1,
+      "categoryid": 4,
+      "date": "2025-04-11",
+      "amount": 1000000,
       "tendencyid": 3,
       "payment": 4,
       "memo": "",
+      "ageid": 2
+    },
+    {
+      "id": "0a35",
+      "userid": "1111",
+      "typeid": 1,
+      "categoryid": 4,
+      "date": "2025-04-11",
+      "amount": 2000000,
+      "tendencyid": 3,
+      "payment": 4,
+      "memo": "",
+      "ageid": 2
+    },
+    {
+      "id": "79e7",
+      "userid": "1111",
+      "typeid": 1,
+      "categoryid": 1,
+      "date": "2025-04-11",
+      "amount": 1000000,
+      "tendencyid": 3,
+      "payment": 4,
+      "memo": "알바비",
       "ageid": 2
     }
   ],
