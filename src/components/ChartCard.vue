@@ -46,9 +46,9 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="chart-card">
+  <div class="chartCard">
     <h3>{{ title }}</h3>
-    <div class="chart-container">
+    <div class="chartContainer">
       <Bar
         v-if="chartType === 'bar'"
         :data="chartData"
@@ -69,7 +69,7 @@ const props = defineProps({
 </template>
 
 <style scoped>
-.chart-card {
+.chartCard {
   background-color: var(--background-color);
   padding: 20px;
   border-radius: 12px;
@@ -78,13 +78,13 @@ const props = defineProps({
   text-align: center;
 }
 
-.chart-card h3 {
+.chartCard h3 {
   font: var(--ng-bold-20);
   margin-bottom: 10px;
   color: var(--text-color);
 }
 
-.chart-container {
+.chartContainer {
   height: 300px;
   width: 100%;
 }

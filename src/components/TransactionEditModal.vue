@@ -102,42 +102,40 @@ onMounted(async () => {
   categories.value = res.data;
 });
 </script>
+
 <template>
-  <div v-if="isOpen" class="modal-backdrop">
-    <div class="modal-content">
-      <!-- 모달 헤더 -->
-      <div class="modal-header">
+  <div v-if="isOpen" class="modalBackdrop">
+    <div class="modalContent">
+      <div class="modalHeader">
         <h3 class="title">거래 수정</h3>
         <i class="fa-solid fa-xmark close-icon" @click="closeModal"></i>
       </div>
 
-      <!-- 지출/수입 타입 표시 -->
-      <div class="type-display">
+      <div class="typeDisplay">
         <button
-          class="type-btn"
+          class="typeBtn"
           :class="{ active: editedTransaction.type === 'expense' }"
         >
           지출
         </button>
         <button
-          class="type-btn"
+          class="typeBtn"
           :class="{ active: editedTransaction.type === 'income' }"
         >
           수입
         </button>
       </div>
 
-      <!-- 수정 폼 -->
-      <div class="modal-body">
+      <div class="modalBody">
         <label>날짜</label>
         <input
           type="date"
           v-model="editedTransaction.date"
-          class="input-field"
+          class="inputField"
         />
 
         <label>카테고리</label>
-        <select v-model="editedTransaction.category" class="input-field">
+        <select v-model="editedTransaction.category" class="inputField">
           <option v-for="category in categoryList" :key="category">
             {{ category }}
           </option>
@@ -147,24 +145,24 @@ onMounted(async () => {
         <input
           type="number"
           v-model="editedTransaction.amount"
-          class="input-field"
+          class="inputField"
         />
 
         <label>설명</label>
         <input
           type="text"
           v-model="editedTransaction.description"
-          class="input-field"
+          class="inputField"
         />
 
         <label v-if="editedTransaction.type === 'expense'">지불 방법</label>
-        <div class="payment-method" v-if="editedTransaction.type === 'expense'">
+        <div class="paymentMethod" v-if="editedTransaction.type === 'expense'">
           <button
             v-for="method in paymentMethods"
             :key="method"
             @click="setPaymentMethod(method)"
             :class="[
-              'method-btn',
+              'methodBtn',
               { active: editedTransaction.paymentMethod === method },
             ]"
           >
@@ -173,7 +171,7 @@ onMounted(async () => {
         </div>
         <label v-if="editedTransaction.type === 'expense'">지출 성향</label>
         <div
-          class="consumption-type"
+          class="consumptionType"
           v-if="editedTransaction.type === 'expense'"
         >
           <button
@@ -194,14 +192,14 @@ onMounted(async () => {
           </button>
         </div>
 
-        <button class="save-btn" @click="saveTransaction">저장하기</button>
+        <button class="saveBtn" @click="saveTransaction">저장하기</button>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.modal-backdrop {
+.modalBackdrop {
   position: fixed;
   top: 0;
   left: 0;
@@ -213,7 +211,7 @@ onMounted(async () => {
   align-items: center;
   z-index: 1000;
 }
-.modal-content {
+.modalContent {
   background-color: var(--background-color);
   border-radius: 16px;
   padding: 28px;
@@ -224,7 +222,7 @@ onMounted(async () => {
   flex-direction: column;
   gap: 16px;
 }
-.dark .modal-content {
+.dark .modalContent {
   background-color: black;
   border-radius: 16px;
   padding: 28px;
@@ -235,12 +233,12 @@ onMounted(async () => {
   flex-direction: column;
   gap: 16px;
 }
-.modal-body {
+.modalBody {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
-label {
+.label {
   font: var(--ng-reg-16);
   color: var(--text-subtitle);
   margin-bottom: 4px;
@@ -250,8 +248,8 @@ label {
   color: white;
   margin-bottom: 4px;
 }
-.input-field,
-select.input-field {
+.inputField,
+select.inputField {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid #e5e7eb;
@@ -260,17 +258,17 @@ select.input-field {
   background-color: var(--card-color);
   box-sizing: border-box;
 }
-.input-field:focus,
-select.input-field:focus {
+.inputField:focus,
+.select.inputField:focus {
   outline: none;
   border-color: var(--primary-color);
   background-color: var(--background-color);
 }
-.type-display {
+.typeDisplay {
   display: flex;
   gap: 10px;
 }
-.type-btn {
+.typeBtn {
   flex: 1;
   padding: 12px;
   font: var(--ng-bold-18);
@@ -280,19 +278,19 @@ select.input-field:focus {
   border: none;
   text-align: center;
 }
-.type-btn.active {
+.typeBtn.active {
   background-color: var(--primary-color);
   color: var(--text-white);
 }
-.payment-method,
-.consumption-type {
+.paymentMethod,
+.consumptionType {
   display: flex;
   justify-content: space-between;
   gap: 8px;
   flex-wrap: wrap;
 }
-.method-btn,
-.consumption-type button {
+.methodBtn,
+.consumptionType button {
   flex: 1 1 30%;
   padding: 10px;
   border-radius: 8px;
@@ -302,12 +300,12 @@ select.input-field:focus {
   border: none;
   text-align: center;
 }
-.method-btn.active,
-.consumption-type button.active {
+.methodBtn.active,
+.consumptionType button.active {
   background-color: var(--primary-color);
   color: var(--text-white);
 }
-.save-btn {
+.saveBtn {
   width: 100%;
   padding: 14px;
   margin-top: 12px;
@@ -318,7 +316,7 @@ select.input-field:focus {
   cursor: pointer;
   border: none;
 }
-.modal-header {
+.modalHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -331,12 +329,12 @@ select.input-field:focus {
   font: var(--ng-bold-20);
   color: white;
 }
-.close-icon {
+.closeIcon {
   font-size: 24px;
   cursor: pointer;
   color: var(--text-color);
 }
-.dark .close-icon {
+.dark .closeIcon {
   font-size: 24px;
   cursor: pointer;
   color: white;

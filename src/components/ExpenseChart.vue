@@ -29,10 +29,9 @@ const barChartHeight = computed(() => {
 const initBarChart = () => {
   if (barChart) barChart.destroy();
 
-  const tickColor = props.isDarkMode ? '#fdfdfd' : '#333'; // 기존 #f5f5f5 → 더 밝게
+  const tickColor = props.isDarkMode ? '#fdfdfd' : '#333';
 
-  const textColor = props.isDarkMode ? '#fdfdfd' : '#333'; // 도넛 차트 글씨 색상도 통일
-
+  const textColor = props.isDarkMode ? '#fdfdfd' : '#333';
   barChart = new Chart(barChartRef.value, {
     type: 'bar',
     data: {
@@ -66,7 +65,7 @@ const initBarChart = () => {
         legend: {
           position: 'top',
           labels: {
-            color: tickColor, // ✅ 범례 글자 색상
+            color: tickColor,
           },
         },
         tooltip: {
@@ -81,15 +80,15 @@ const initBarChart = () => {
           beginAtZero: true,
           ticks: {
             callback: (v) => `₩${v.toLocaleString()}`,
-            color: tickColor, // ✅ X축 글자 색상
+            color: tickColor,
           },
           grid: {
-            color: props.isDarkMode ? '#444' : '#ccc', // ✅ 격자선 색상
+            color: props.isDarkMode ? '#444' : '#ccc',
           },
         },
         y: {
           ticks: {
-            color: tickColor, // ✅ Y축 글자 색상
+            color: tickColor,
           },
           grid: {
             color: props.isDarkMode ? '#444' : '#ccc',
@@ -122,7 +121,7 @@ const initDonutChart = () => {
         legend: {
           position: 'bottom',
           labels: {
-            color: textColor, // ✅ 범례 텍스트 색상
+            color: textColor,
           },
         },
         tooltip: {
@@ -154,45 +153,45 @@ watch(
 </script>
 
 <template>
-  <div class="chart-container">
-    <div class="chart-section" :style="{ height: barChartHeight }">
-      <h3 class="chart-title">카테고리별 소비 비교</h3>
+  <div class="chartContainer">
+    <div class="chartSection" :style="{ height: barChartHeight }">
+      <h3 class="chartTitle">카테고리별 소비 비교</h3>
       <canvas
         ref="barChartRef"
-        class="chart-canvas"
+        class="chartCanvas"
         :height="parseInt(barChartHeight)"
       ></canvas>
     </div>
 
-    <div class="summary-section">
-      <p class="summary-text">
+    <div class="summarySection">
+      <p class="summaryText">
         총 소비 : <strong>{{ myTotal.toLocaleString() }}원</strong><br />
         또래 평균 : <strong>{{ avgTotal.toLocaleString() }}원</strong>
       </p>
 
-      <p class="result-text">
-        <span v-if="myTotal > avgTotal" class="over-msg">
+      <p class="resultText">
+        <span v-if="myTotal > avgTotal" class="overMsg">
           ⚠️ 평균보다
           <strong>{{ (myTotal - avgTotal).toLocaleString() }}원</strong> 더
           사용하셨습니다.
         </span>
-        <span v-else class="good-msg">
+        <span v-else class="goodMsg">
           🎉 평균보다
           <strong>{{ (avgTotal - myTotal).toLocaleString() }}원</strong> 적게
           사용하셨습니다!
         </span>
       </p>
 
-      <div class="chart-section">
-        <h3 class="chart-title">총 소비 비교</h3>
-        <canvas ref="donutChartRef" class="chart-canvas"></canvas>
+      <div class="chartSection">
+        <h3 class="chartTitle">총 소비 비교</h3>
+        <canvas ref="donutChartRef" class="chartCanvas"></canvas>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.chart-container {
+.chartContainer {
   display: flex;
   flex-direction: column;
   gap: 50px;
@@ -203,26 +202,26 @@ watch(
   margin-bottom: 50px;
 }
 
-.chart-section {
+.chartSection {
   width: 100%;
   max-width: 1000px;
   height: 500px;
 }
 
-.chart-title {
+.chartTitle {
   font: var(--ng-reg-24);
   text-align: center;
   margin-bottom: 16px;
   color: var(--primary-color);
 }
 
-.chart-canvas {
+.chartCanvas {
   width: 100%;
   height: 100% !important;
   display: block;
 }
 
-.summary-section {
+.summarySection {
   text-align: center;
   margin-top: 30px;
   height: 100%;
@@ -230,41 +229,40 @@ watch(
   color: var(--text-color);
 }
 
-.summary-text {
+.summaryText {
   margin-bottom: 20px;
   font: var(--ng-reg-22);
 }
 
-.result-text {
+.resultText {
   margin-bottom: 30px;
   font-size: 16px;
   font: var(--ng-reg-20);
 }
 
-.over-msg {
+.overMsg {
   color: #ff4d4f;
   font: var(--ng-reg-20);
 }
 
-.good-msg {
+.goodMsg {
   color: var(--text-success);
   font: var(--ng-reg-20);
 }
 
-.dark .chart-title {
+.dark .chartTitle {
   color: #f9a8d4;
 }
-.dark .chart-container {
+.dark .chartContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
   height: 100%;
-  /* padding: 10px 10px; */
   margin-bottom: 50px;
 }
 
-.dark .summary-section {
+.dark .summarySection {
   background-color: #e7e5e4;
   color: #f5f5f5;
   border-radius: 1rem;
@@ -273,23 +271,23 @@ watch(
   box-shadow: 0 2px 6px rgba(255, 255, 255, 0.05);
 }
 
-.dark .summary-text {
+.dark .summaryText {
   color: black;
 }
 
-.dark .result-text {
+.dark .resultText {
   color: black;
 }
 
-.dark .good-msg {
-  color: #4ade80; /* 초록 */
+.dark .goodMsg {
+  color: #4ade80;
 }
 
-.dark .over-msg {
-  color: #f87171; /* 빨강 */
+.dark .overMsg {
+  color: #f87171;
 }
 
-.dark .chart-section {
+.dark .chartSection {
   background-color: #e7e5e4;
   padding: 2rem 2rem 5.5rem 2rem;
   border-radius: 1rem;
@@ -300,7 +298,7 @@ watch(
   box-shadow: 0 2px 6px rgba(255, 255, 255, 0.05);
 }
 
-.dark .chart-title {
+.dark .chartTitle {
   color: #ec4899;
 }
 </style>

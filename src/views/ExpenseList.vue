@@ -1,14 +1,24 @@
 <script setup>
-// ✅ 기본 Vue 및 라이브러리 임포트
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 
-// ✅ 모달 컴포넌트 임포트
 import TransactionEditModal from '../components/TransactionEditModal.vue';
 import FilterModal from '../components/FilterModal.vue';
 import TransactionDetailModal from '../components/TransactionDetailModal.vue';
 import TransactionModal from '../components/TransactionModal.vue';
+
+const router = useRouter();
+const goToHome = () => router.push('/home');
+const mypageClick = () => router.push('/myPage');
+const logout = () => {
+  alert('안녕히가세요!');
+
+  localStorage.removeItem('loggedInUserId');
+  localStorage.removeItem('loggedInUserInfo');
+
+  router.push('/');
+};
 
 // 페이지네이션
 const currentPage = ref(1);
@@ -32,42 +42,24 @@ const goToPage = (page) => {
   }
 };
 
-// ✅ 라우터 이동 관련
-const router = useRouter();
-const goToHome = () => router.push('/home');
-const mypageClick = () => router.push('/myPage');
-const logout = () => {
-  alert('안녕히가세요!');
-
-  localStorage.removeItem('loggedInUserId');
-  localStorage.removeItem('loggedInUserInfo');
-
-  router.push('/');
-};
-
-// ✅ 다크 모드
 const isDarkMode = ref(false);
 const toggleDarkMode = () => {
   isDarkMode.value = !isDarkMode.value;
   document.documentElement.classList.toggle('dark', isDarkMode.value);
 };
 
-// ✅ 거래 관련 상태
 const transactions = ref([]);
 const originalTransactions = ref([]);
 const categories = ref([]);
 
-// ✅ 필터 모달 상태
 const isFilterModalOpen = ref(false);
 const openFilterModal = () => (isFilterModalOpen.value = true);
 const closeFilterModal = () => (isFilterModalOpen.value = false);
 
-// ✅ 거래 추가 모달 상태
 const isTransactionModalOpen = ref(false);
 const openTransactionModal = () => (isTransactionModalOpen.value = true);
 const closeTransactionModal = () => (isTransactionModalOpen.value = false);
 
-// ✅ 거래 상세 모달 상태
 const isDetailModalOpen = ref(false);
 const selectedDetailTransaction = ref(null);
 const openDetailModal = (transaction) => {
@@ -220,10 +212,8 @@ const handleAddTransaction = async (newTransaction) => {
       userid: userId,
     };
 
-    // POST 요청 → DB 저장
     const res = await axios.post(`http://localhost:3000/money`, payload);
 
-    // 응답값 기반으로 프론트에 표시할 데이터 생성
     const newItem = {
       id: res.data.id,
       date: res.data.date,
@@ -233,14 +223,11 @@ const handleAddTransaction = async (newTransaction) => {
       type: res.data.typeid === 1 ? 'income' : 'expense',
     };
 
-    // 중복 방지 후 추가
     const exists = transactions.value.some((t) => t.id === newItem.id);
     if (!exists) {
       transactions.value.unshift(newItem);
-      // originalTransactions.value.unshift(newItem);
     }
 
-    // 모달 닫기 및 합계 계산
     closeTransactionModal();
     calculateTotals();
   } catch (err) {
@@ -254,7 +241,6 @@ onMounted(async () => {
     const res = await axios.get('http://localhost:3000/category');
     categories.value = res.data;
 
-    // 카테고리 다 받아오고 나서 호출
     await fetchTransactions();
   } catch (err) {
     console.error('카테고리 불러오기 실패:', err);
@@ -284,34 +270,34 @@ onMounted(async () => {
           <button class="logout" @click="logout">로그아웃</button>
         </div>
       </header>
-      <div class="expense-list-container">
+      <div class="expenseListContainer">
         <div class="container">
-          <div class="summary-header">
-            <div class="summary-cards">
-              <div class="summary-card">
+          <div class="summaryHeader">
+            <div class="summaryCards">
+              <div class="summaryCard">
                 <span>총 수입</span>
                 <span class="income">{{ totalIncome.toLocaleString() }}원</span>
               </div>
-              <div class="summary-card">
+              <div class="summaryCard">
                 <span>총 지출</span>
                 <span class="expense"
                   >{{ totalExpense.toLocaleString() }}원</span
                 >
               </div>
-              <div class="summary-card">
+              <div class="summaryCard">
                 <span>총 자산</span>
                 <span class="balance">{{ allAccount.toLocaleString() }}원</span>
               </div>
             </div>
           </div>
           <!-- 필터 버튼 상단 우측 -->
-          <div class="table-toolbar">
-            <button class="round-btn" @click="openFilterModal">
+          <div class="tableToolbar">
+            <button class="roundBtn" @click="openFilterModal">
               <i class="fa-solid fa-filter"></i>
               <span>필터</span>
             </button>
             <button
-              class="round-btn"
+              class="roundBtn"
               @click="
                 applyFilter({
                   startDate: '',
@@ -327,7 +313,7 @@ onMounted(async () => {
           </div>
 
           <!-- 거래 목록 -->
-          <table class="transaction-table" v-if="paginatedTransactions.length">
+          <table class="transactionTable" v-if="paginatedTransactions.length">
             <thead>
               <tr>
                 <th @click="sortBy('date')">
@@ -345,11 +331,6 @@ onMounted(async () => {
             </thead>
 
             <tbody>
-              <!-- <tr
-            v-for="transaction in transactions"
-            :key="transaction.id"
-            @click="openDetailModal(transaction)"
-          > -->
               <tr
                 v-for="transaction in paginatedTransactions"
                 :key="transaction.id"
@@ -357,11 +338,11 @@ onMounted(async () => {
               >
                 <td>{{ transaction?.date }}</td>
                 <td>{{ transaction?.category }}</td>
-                <td :class="['transaction-amount', transaction?.type]">
+                <td :class="['transactionAmount', transaction?.type]">
                   {{ transaction?.amount.toLocaleString() }}원
                 </td>
                 <td>{{ transaction?.description }}</td>
-                <td class="action-icons">
+                <td class="actionIcons">
                   <i
                     class="fa-solid fa-pen-to-square edit-icon"
                     @click.stop="handleEditClick(transaction)"
@@ -384,7 +365,7 @@ onMounted(async () => {
           <!-- 페이지네이션 컨트롤 -->
           <div class="pagination">
             <button
-              class="pagination-btn"
+              class="paginationBtn"
               @click="goToPage(currentPage - 1)"
               :disabled="currentPage === 1"
             >
@@ -394,14 +375,14 @@ onMounted(async () => {
             <button
               v-for="page in totalPages"
               :key="page"
-              :class="['pagination-btn', { active: page === currentPage }]"
+              :class="['paginationBtn', { active: page === currentPage }]"
               @click="goToPage(page)"
             >
               {{ page }}
             </button>
 
             <button
-              class="pagination-btn"
+              class="paginationBtn"
               @click="goToPage(currentPage + 1)"
               :disabled="currentPage === totalPages"
             >
@@ -409,7 +390,6 @@ onMounted(async () => {
             </button>
           </div>
 
-          <!-- 수정 모달 -->
           <TransactionEditModal
             v-if="showEditModal && editTarget"
             :isOpen="showEditModal"
@@ -418,7 +398,6 @@ onMounted(async () => {
             @update="applyEdit"
           />
 
-          <!-- 필터 모달  -->
           <FilterModal
             v-if="isFilterModalOpen"
             :isOpen="isFilterModalOpen"
@@ -433,8 +412,7 @@ onMounted(async () => {
             @close="closeDetailModal"
           />
 
-          <!-- 거래 추가 버튼 -->
-          <button class="add-button" @click="openTransactionModal">
+          <button class="addButton" @click="openTransactionModal">
             <i class="fa-solid fa-plus"></i>
           </button>
           <TransactionModal
@@ -470,13 +448,13 @@ body {
 .container {
   padding: 20px;
 }
-.filter-bar {
+.filterBar {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
 }
-.date-btn,
-.category-btn {
+.dateBtn,
+.categoryBtn {
   background-color: var(--primary-color);
   color: var(--text-white);
   padding: 8px 12px;
@@ -485,12 +463,12 @@ body {
   cursor: pointer;
   font: var(--ng-bold-14);
 }
-.summary-header {
+.summaryHeader {
   display: flex;
   justify-content: center;
   margin: 30px 0 10px;
 }
-.summary-cards {
+.summaryCards {
   display: flex;
   flex-wrap: wrap;
   gap: 30px;
@@ -498,7 +476,7 @@ body {
   justify-content: center;
   max-width: 100%;
 }
-.summary-card {
+.summaryCard {
   background-color: var(--background-color);
   border-radius: 16px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -509,7 +487,7 @@ body {
   flex: 1 1 250px;
   font: var(--ng-reg-18);
 }
-.summary-card span {
+.summaryCard span {
   display: block;
   margin: 10px 0;
 }
@@ -526,20 +504,20 @@ body {
   color: var(--text-balance);
   font-size: 24px;
 }
-.transaction-table {
+.transactionTable {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
 }
 
-.transaction-table th,
-.transaction-table td {
+.transactionTable th,
+.transactionTable td {
   padding: 12px;
   text-align: center;
   border-bottom: 1px solid #e0e0e0;
   font: var(--ng-reg-15);
 }
-.transaction-table th {
+.transactionTable th {
   font: var(--ng-reg-18);
   color: var(--text-color);
   letter-spacing: 0.5px;
@@ -554,28 +532,28 @@ th i {
   font-size: 14px;
 }
 
-.transaction-table td {
+.transactionTable td {
   font: var(--ng-reg-16);
   color: var(--text-color);
   letter-spacing: 0.3px;
 }
 
-.transaction-amount.income {
+.transactionAmount.income {
   color: var(--text-income);
   font: var(--ng-reg-16);
 }
 
-.transaction-amount.expense {
+.transactionAmount.expense {
   color: var(--text-expense);
   font: var(--ng-reg-16);
 }
 
-.edit-icon {
+.editIcon {
   cursor: pointer;
   color: var(--text-secondary);
 }
 
-.add-button {
+.addButton {
   position: fixed;
   bottom: 40px;
   right: 40px;
@@ -591,32 +569,32 @@ th i {
   align-items: center;
 }
 
-.delete-icon {
+.deleteIcon {
   cursor: pointer;
   margin-left: 20px;
 }
 
-.action-icons {
+.actionIcons {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 14px;
 }
 
-.edit-icon,
-.delete-icon {
+.editIcon,
+.deleteIcon {
   font-size: 18px;
 }
 
-.edit-icon {
+.editIcon {
   color: var(--text-secondary);
 }
 
-.delete-icon {
+.deleteIcon {
   color: var(--text-error);
 }
 
-.filter-btn {
+.filterBtn {
   align-self: flex-start;
   background-color: var(--background-color);
   border: none;
@@ -631,7 +609,7 @@ th i {
   height: 40px;
   margin-left: auto;
 }
-.reset-btn {
+.resetBtn {
   background-color: var(--background-color);
   border: none;
   border-radius: 8px;
@@ -645,14 +623,14 @@ th i {
   height: 40px;
   cursor: pointer;
 }
-.table-toolbar {
+.tableToolbar {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
   margin: 10px 0;
 }
 
-.round-btn {
+.roundBtn {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -665,7 +643,6 @@ th i {
   cursor: pointer;
 }
 
-/* 헤더  */
 .dashboardHeader {
   display: flex;
   justify-content: space-between;
@@ -695,7 +672,6 @@ th i {
   gap: 1rem;
 }
 
-/* 다크모드 버튼 */
 .darkModeButton {
   padding: 8px 12px;
   font-size: 1.2rem;
@@ -727,7 +703,6 @@ th i {
   margin-right: 20px;
 }
 
-/* 새 거래추가 버튼 */
 .inputValue {
   background-color: rgb(254, 235, 253);
   border: 1px solid rgb(251, 209, 251);
@@ -739,7 +714,7 @@ th i {
   font: var(--ng-reg-18);
   color: #333;
 }
-/* 다크모드 */
+
 .dark .dashboard {
   background: linear-gradient(to bottom, #121212, #121212);
   color: #1a1a2e;
@@ -749,64 +724,55 @@ th i {
   color: black;
 }
 
-/* 다크 모드에서 컨테이너 배경 */
 .dark .container {
   background-color: #1e1e1e;
 }
 
-/* 카드 및 표 요약 영역 */
-.dark .summary-card {
+.dark .summaryCard {
   background-color: #2a2a2a;
   color: #f5f5f5;
 }
 
-.dark .summary-header,
-.dark .summary-cards {
+.dark .summaryHeader,
+.dark .summaryCards {
   background-color: transparent;
 }
 
-/* 테이블 */
-.dark .transaction-table th,
-.dark .transaction-table td {
+.dark .transactionTable th,
+.dark .transactionTable td {
   background-color: #1e1e1e;
   color: #f5f5f5;
   border-color: #444;
 }
 
-/* 페이지네이션 */
-.dark .pagination-btn {
+.dark .paginationBtn {
   background-color: #2a2a2a;
   color: #f5f5f5;
   border: 1px solid #fbcee8;
 }
-.dark .pagination-btn:hover {
+.dark .paginationBtn:hover {
   background-color: #3a3a3a;
 }
-.dark .pagination-btn.active {
+.dark .paginationBtn.active {
   background-color: #fbcee8;
   color: #1e1e1e;
 }
 
-/* 헤더 */
-
-/* 필터/초기화 버튼 */
-.dark .round-btn {
+.dark .roundBtn {
   background-color: #2a2a2a;
   color: #f5f5f5;
   border: 1px solid #fbcee8;
 }
 
-/* 모달 버튼 */
-.dark .add-button {
+.dark .addButton {
   background-color: #fbcee8;
   color: #1e1e1e;
 }
 
-/* 아이콘 */
-.dark .edit-icon {
+.dark .editIcon {
   color: #ddd;
 }
-.dark .delete-icon {
+.dark .deleteIcon {
   color: #f87171;
 }
 
@@ -833,20 +799,19 @@ th i {
 }
 
 /* 반응형  */
-
 @media (max-width: 1024px) {
-  .summary-cards {
+  .summaryCards {
     flex-direction: column;
     align-items: center;
   }
 
-  .summary-card {
+  .summaryCard {
     width: 90%;
     max-width: 400px;
   }
 
-  .transaction-table th,
-  .transaction-table td {
+  .transactionTable th,
+  .transactionTable td {
     font-size: 14px;
     padding: 10px 6px;
   }
@@ -879,21 +844,21 @@ th i {
     font-size: 14px;
   }
 
-  .table-toolbar {
+  .tableToolbar {
     flex-direction: column;
     align-items: flex-end;
   }
 
-  .transaction-table th,
-  .transaction-table td {
+  .transactionTable th,
+  .transactioTable td {
     font-size: 13px;
   }
 
-  .summary-card {
+  .summaryCard {
     padding: 20px;
   }
 
-  .add-button {
+  .addButton {
     width: 60px;
     height: 60px;
     font-size: 18px;
@@ -915,19 +880,19 @@ th i {
     margin-bottom: 6px;
   }
 
-  .summary-card {
+  .summaryCard {
     width: 95%;
   }
 
-  .transaction-table {
+  .transactionTable {
     font-size: 12px;
   }
 
-  .action-icons i {
+  .actionIcons i {
     font-size: 14px;
   }
 
-  .round-btn {
+  .roundBtn {
     font-size: 13px;
     padding: 6px 10px;
   }

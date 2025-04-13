@@ -1,8 +1,15 @@
-<!-- components/TransactionDetailModal.vue -->
+<script setup>
+const props = defineProps({
+  isOpen: Boolean,
+  transaction: Object,
+});
+const emit = defineEmits(['close']);
+</script>
+
 <template>
-  <div v-if="isOpen" class="modal-backdrop">
-    <div class="modal-card">
-      <div class="modal-header">
+  <div v-if="isOpen" class="modalBackdrop">
+    <div class="modalCard">
+      <div class="modalHeader">
         <h3 class="title">거래 상세</h3>
         <i class="fa-solid fa-xmark close-icon" @click="$emit('close')"></i>
       </div>
@@ -13,34 +20,26 @@
       >
         ₩{{ transaction.amount.toLocaleString() }}
       </div>
-      <div class="info-section">
-        <div class="info-item">
+      <div class="infoSection">
+        <div class="infoItem">
           <span class="label">카테고리</span>
-          <div class="info-value">{{ transaction.category }}</div>
+          <div class="infoValue">{{ transaction.category }}</div>
         </div>
-        <div class="info-item">
+        <div class="infoItem">
           <span class="label">소비 유형</span>
-          <div class="info-value">{{ transaction.subCategory || '-' }}</div>
+          <div class="infoValue">{{ transaction.subCategory || '-' }}</div>
         </div>
-        <div class="info-item">
+        <div class="infoItem">
           <span class="label">내용</span>
-          <div class="info-value">{{ transaction.description }}</div>
+          <div class="infoValue">{{ transaction.description }}</div>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
-const props = defineProps({
-  isOpen: Boolean,
-  transaction: Object,
-});
-const emit = defineEmits(['close']);
-</script>
-
 <style scoped>
-.modal-backdrop {
+.modalBackdrop {
   position: fixed;
   top: 0;
   left: 0;
@@ -52,21 +51,21 @@ const emit = defineEmits(['close']);
   align-items: center;
   z-index: 999;
 }
-.modal-card {
+.modalCard {
   background-color: var(--background-color);
   padding: 28px;
   border-radius: 16px;
   max-width: 420px;
   width: 90%;
 }
-.dark .modal-card {
+.dark .modalCard {
   background-color: var(--background-color);
   padding: 28px;
   border-radius: 16px;
   max-width: 420px;
   width: 90%;
 }
-.modal-header {
+.modalHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -74,7 +73,7 @@ const emit = defineEmits(['close']);
 .title {
   font: var(--ng-bold-20);
 }
-.close-icon {
+.closeIcon {
   font-size: 24px;
   cursor: pointer;
 }
@@ -84,23 +83,23 @@ const emit = defineEmits(['close']);
   text-align: center;
   margin: 18px 0;
 }
-.text-income {
+.textIncome {
   color: var(--text-income);
 }
-.text-expense {
+.textExpense {
   color: var(--text-expense);
 }
-.info-section {
+.infoSection {
   margin-top: 10px;
 }
-.info-item {
+.infoItem {
   margin: 12px 0;
 }
 .label {
   font: var(--ng-bold-16);
   color: var(--text-subtitle);
 }
-.info-value {
+.infoValue {
   background-color: var(--card-color);
   padding: 12px;
   border-radius: 8px;

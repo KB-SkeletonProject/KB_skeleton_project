@@ -86,7 +86,6 @@ const updateSavingsSettings = async ({
   savingsModalVisible.value = false;
 };
 
-// DB에서 월간 데이터 fetch
 const fetchMonthlyData = async () => {
   try {
     const userId = localStorage.getItem('loggedInUserId');
@@ -96,16 +95,13 @@ const fetchMonthlyData = async () => {
       return;
     }
 
-    // 유저 정보에서 goalSavings 가져오기
     const userRes = await axios.get(`http://localhost:3000/user/${userId}`);
     goalRate.value = userRes.data.goalSavings ?? 0;
 
-    // 전체 거래 데이터에서 해당 유저의 지출/수입 필터
     const res = await axios.get('http://localhost:3000/money');
     const allData = res.data;
     const userData = allData.filter((item) => item.userid === userId);
 
-    // 현재 월과 이전 월 계산
     const now = new Date();
     const currentMonth = now.toISOString().slice(0, 7);
     const previousMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1)
@@ -169,39 +165,37 @@ onMounted(fetchMonthlyData);
         <button class="logout" @click="logout">로그아웃</button>
       </div>
     </header>
-    <div class="monthly-analysis-container">
-      <!-- 수입, 지출, 잔액, 저축률  -->
-      <div class="summary-cards">
-        <div class="summary-card">
+    <div class="monthlyAnalysisContainer">
+      <div class="summaryCards">
+        <div class="summaryCard">
           <h3>이번 달 수입</h3>
           <p class="income">{{ income.toLocaleString() }}원</p>
         </div>
-        <div class="summary-card">
+        <div class="summaryCard">
           <h3>이번 달 지출</h3>
           <p class="expense">{{ expense.toLocaleString() }}원</p>
         </div>
-        <div class="summary-card">
+        <div class="summaryCard">
           <h3>이번 달 잔액</h3>
           <p class="balance">{{ balance.toLocaleString() }}원</p>
         </div>
 
         <!-- 저축률  -->
-        <div class="summary-card savings-card" @click="toggleSavingsModal">
+        <div class="summaryCard savingsCard" @click="toggleSavingsModal">
           <h3>저축률</h3>
-          <div class="savings-content">
-            <div class="savings-section">
-              <p class="savings-rate">{{ savingsRate }}%</p>
-              <p class="savings-label">현재 저축률</p>
+          <div class="savingsContent">
+            <div class="savingsSection">
+              <p class="savingsRate">{{ savingsRate }}%</p>
+              <p class="savingsLabel">현재 저축률</p>
             </div>
             <div class="divider"></div>
-            <div class="savings-section">
-              <p class="goal-rate">{{ goalRate }}%</p>
-              <p class="goal-label">목표 저축률</p>
+            <div class="savingsSection">
+              <p class="goalRate">{{ goalRate }}%</p>
+              <p class="goalLabel">목표 저축률</p>
             </div>
           </div>
         </div>
 
-        <!-- 저축률 설정 모달  -->
         <SavingsModal
           v-if="savingsModalVisible"
           :show="savingsModalVisible"
@@ -210,28 +204,28 @@ onMounted(fetchMonthlyData);
         />
       </div>
 
-      <div class="month-header">
+      <div class="monthHeader">
         <h2>{{ month }}월 {{ year }}년</h2>
       </div>
 
-      <div class="middle-section">
+      <div class="middleSection">
         <!-- 이번달 총 지출 -->
-        <div class="part-card total-expense-card">
-          <div class="expense-header">
+        <div class="partCard totalExpenseCard">
+          <div class="expenseHeader">
             <i class="fa-solid fa-magnifying-glass"></i>
             <h3>이번달 총 지출</h3>
           </div>
-          <p class="total-expense">{{ expense.toLocaleString() }}원</p>
+          <p class="totalExpense">{{ expense.toLocaleString() }}원</p>
           <p class="comparison">
             지난 달보다
-            <span class="comparison-money">
+            <span class="comparisonMoney">
               {{ (expense - previousExpense).toLocaleString() }}원
             </span>
           </p>
         </div>
 
         <!-- 월별 비교 -->
-        <div class="part-card">
+        <div class="partCard">
           <h2>월별 수입/지출 비교</h2>
           <ChartCard
             chartType="bar"
@@ -263,7 +257,7 @@ onMounted(fetchMonthlyData);
         </div>
 
         <!-- 예산 대비 -->
-        <div class="part-card">
+        <div class="partCard">
           <h2>예산 대비 지출</h2>
           <ChartCard
             chartType="doughnut"
@@ -298,26 +292,24 @@ onMounted(fetchMonthlyData);
   background: linear-gradient(to bottom, #121212, #121212);
   color: #1a1a2e;
 }
-.monthly-analysis-container {
-  max-width: 1200px;
+.monthlyAnalysisContainer {
+  max-width: 1300px;
   background-color: var(--bg-main);
   margin: 0 auto;
-  padding: 20px;
   display: flex;
   justify-content: center;
   flex-direction: column;
-  gap: 10px;
   width: 100%;
 }
 
-.summary-cards {
+.summaryCards {
   display: flex;
   gap: 10px;
   justify-content: space-around;
   margin-bottom: 10px;
 }
 
-.summary-card {
+.summaryCard {
   padding: 20px;
   background-color: var(--background-color);
   border-radius: 12px;
@@ -350,7 +342,7 @@ onMounted(fetchMonthlyData);
   color: var(--hot-pink);
 }
 
-.savings-card {
+.savingsCard {
   padding: 15px;
   background-color: var(--background-color);
   border-radius: 12px;
@@ -360,32 +352,32 @@ onMounted(fetchMonthlyData);
   flex-direction: column;
 }
 
-.savings-content {
+.savingsContent {
   display: flex;
   align-items: center;
   justify-content: space-around;
   gap: 5px;
 }
-.savings-section {
+.savingsSection {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.savings-rate {
+.savingsRate {
   font: var(--ng-bold-28);
   color: var(--hot-pink);
   margin: 0;
 }
 
-.goal-rate {
+.goalRate {
   font: var(--ng-bold-28);
   color: var(--text-color);
   margin: 0;
 }
 
-.savings-label,
-.goal-label {
+.savingsLabel,
+.goalLabel {
   font: var(--ng-reg-18);
   color: var(--text-secondary);
 }
@@ -396,20 +388,20 @@ onMounted(fetchMonthlyData);
   background-color: var(--text-secondary);
 }
 
-.month-header {
+.monthHeader {
   text-align: left;
   margin: 10px 10px;
   font: var(--ng-bold-26);
 }
 
-.middle-section {
+.middleSection {
   display: flex;
   gap: 20px;
   justify-content: space-around;
   flex-wrap: wrap;
 }
 
-.part-card {
+.partCard {
   padding: 20px;
   background-color: var(--background-color);
   border-radius: 12px;
@@ -419,14 +411,13 @@ onMounted(fetchMonthlyData);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.total-expense-card {
+.totalExpenseCard {
   text-align: left;
   padding: 20px;
-  /* background-color: var(--b-color); */
   border-radius: 12px;
 }
 
-.expense-header {
+.expenseHeader {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -435,11 +426,11 @@ onMounted(fetchMonthlyData);
   color: var(--text-color);
 }
 
-.expense-header i {
+.expenseHeader i {
   font-size: 24px;
 }
 
-.total-expense {
+.totalExpense {
   font: var(--ng-bold-28);
   color: var(--text-color);
 }
@@ -450,11 +441,11 @@ onMounted(fetchMonthlyData);
   color: var(--text-balance);
 }
 
-.comparison-money {
+.comparisonMoney {
   color: var(--text-balance);
   font: var(--ng-bold-24);
 }
-.chart-container {
+.chartContainer {
   height: 250px;
   width: 100%;
 }
@@ -542,16 +533,16 @@ onMounted(fetchMonthlyData);
   color: #f5f5f5;
 }
 
-.dark .monthly-analysis-container,
-.dark .total-expense-card {
+.dark .monthlyAnalysisContainer,
+.dark .totalExpenseCard {
   background-color: #121212;
   color: white;
   box-shadow: 0 2px 4px rgba(255, 255, 255, 0.05);
 }
-.dark .summary-card,
-.dark .part-card,
-.dark .savings-card,
-.dark .total-expense-card {
+.dark .summaryCard,
+.dark .partCard,
+.dark .savingsCard,
+.dark .totalExpenseCard {
   background-color: #e7e5e4;
   color: black;
 }
@@ -563,8 +554,8 @@ onMounted(fetchMonthlyData);
   background-color: #555;
 }
 
-.dark .savings-label,
-.dark .goal-label,
+.dark .savingsLabel,
+.dark .goalLabel,
 .dark .comparison {
   color: black;
 }
@@ -576,22 +567,22 @@ onMounted(fetchMonthlyData);
 /* 반응형  */
 
 @media (max-width: 1024px) {
-  .summary-cards {
+  .summaryCards {
     flex-wrap: wrap;
     justify-content: center;
   }
 
-  .summary-card {
+  .summaryCard {
     min-width: 45%;
     margin: 10px 0;
   }
 
-  .middle-section {
+  .middleSection {
     flex-direction: column;
     gap: 20px;
   }
 
-  .part-card {
+  .partCard {
     min-width: 100%;
   }
 
@@ -614,21 +605,21 @@ onMounted(fetchMonthlyData);
 }
 
 @media (max-width: 768px) {
-  .summary-cards {
+  .summaryCards {
     flex-direction: column;
     align-items: center;
   }
 
-  .summary-card {
+  .summaryCard {
     width: 90%;
   }
 
-  .middle-section {
+  .middleSection {
     flex-direction: column;
     gap: 16px;
   }
 
-  .part-card {
+  .partCard {
     width: 100%;
   }
 
@@ -659,12 +650,12 @@ onMounted(fetchMonthlyData);
     margin-bottom: 6px;
   }
 
-  .savings-card {
+  .savingsCard {
     flex-direction: column;
     align-items: center;
   }
 
-  .savings-content {
+  .savingsContent {
     flex-direction: column;
     gap: 8px;
   }
@@ -674,15 +665,15 @@ onMounted(fetchMonthlyData);
     height: 1px;
   }
 
-  .month-header {
+  .monthHeader {
     margin-left: 0;
     text-align: center;
   }
 }
 
 @media (max-width: 480px) {
-  .summary-card,
-  .part-card {
+  .summaryCard,
+  .partCard {
     width: 100%;
     padding: 16px;
   }
@@ -710,7 +701,7 @@ onMounted(fetchMonthlyData);
     padding: 5px 8px;
   }
 
-  .total-expense {
+  .totalExpense {
     font-size: 22px;
   }
 
@@ -718,11 +709,11 @@ onMounted(fetchMonthlyData);
     font-size: 14px;
   }
 
-  .comparison-money {
+  .comparisonMoney {
     font-size: 18px;
   }
 
-  .chart-container {
+  .chartContainer {
     height: 200px;
   }
 }
