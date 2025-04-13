@@ -5,14 +5,14 @@ const userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo'));
 </script>
 
 <template>
-  <div class="info-container">
-    <div class="photo-box">
+  <div class="infoContainer">
+    <div class="photoBox">
       <Piggyface :eye-offset="{ x: 0, y: 0 }" :is-eye-closed="false" />
     </div>
 
     <div class="userName">{{ userInfo.name }}님</div>
 
-    <div class="info-item">
+    <div class="infoItem">
       <span class="value">{{ userInfo.userId }}</span>
     </div>
   </div>
@@ -30,7 +30,7 @@ const userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo'));
 }
 
 /* 프로필 사진 박스 */
-.photo-box {
+.photoBox {
   width: 200px;
   height: 200px;
   border-radius: 50%;
@@ -40,7 +40,7 @@ const userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo'));
 }
 
 /* 유저 정보 컨테이너 */
-.info-container {
+.infoContainer {
   background: #ffffff;
   border-radius: 20px;
   padding: 20px 30px;
@@ -49,7 +49,7 @@ const userInfo = JSON.parse(localStorage.getItem('loggedInUserInfo'));
   box-shadow: 8px 8px 16px #d1d1d1, -8px -8px 16px #ffffff;
 }
 
-.info-item {
+.infoItem {
   display: flex;
   justify-content: center;
   margin: 12px 0;

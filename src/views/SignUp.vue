@@ -1,17 +1,17 @@
 <template>
-  <div class="signup-container">
-    <div class="signup-box">
+  <div class="signupContainer">
+    <div class="signupBox">
       <h2 class="title">회원가입</h2>
       <form @submit.prevent="handleSignUp">
-        <label class="label-text">아이디</label>
-        <div class="input-with-button">
+        <label class="labelText">아이디</label>
+        <div class="inputWithButton">
           <input
             type="email"
             placeholder="example@email.com"
             v-model="email"
             :readonly="emailChecked"
           />
-          <button type="button" @click="checkDuplicateEmail" class="check-btn">
+          <button type="button" @click="checkDuplicateEmail" class="checkBtn">
             중복 확인
           </button>
         </div>
@@ -39,11 +39,11 @@
           {{ emailMessage }}
         </p>
 
-        <label class="label-text">이름</label>
+        <label class="labelText">이름</label>
         <input type="text" placeholder="이름을 입력하세요" v-model="name" />
 
-        <label class="label-text">비밀번호</label>
-        <div class="password-field">
+        <label class="labelText">비밀번호</label>
+        <div class="passwordField">
           <input
             :type="showPassword ? 'text' : 'password'"
             placeholder="8자 이상 입력해주세요"
@@ -52,8 +52,8 @@
           <span @click="togglePassword" class="toggle">보기</span>
         </div>
 
-        <label class="label-text">비밀번호 확인</label>
-        <div class="password-field">
+        <label class="labelText">비밀번호 확인</label>
+        <div class="passwordField">
           <input
             :type="showConfirm ? 'text' : 'password'"
             placeholder="비밀번호를 한 번 더 입력해주세요"
@@ -69,7 +69,7 @@
           {{ passwordMatch ? '비밀번호가 같습니다!' : '비밀번호가 다릅니다!' }}
         </p>
 
-        <label class="label-text">연령대</label>
+        <label class="labelText">연령대</label>
         <select v-model="ageGroup">
           <option>10대</option>
           <option>20대</option>
@@ -78,8 +78,8 @@
           <option>50대 이상</option>
         </select>
 
-        <label class="label-text">성별(선택)</label>
-        <div class="gender-buttons">
+        <label class="labelText">성별(선택)</label>
+        <div class="genderButtons">
           <button
             type="button"
             :class="{ selected: gender === '남성' }"
@@ -96,12 +96,12 @@
           </button>
         </div>
 
-        <button type="submit" class="signup-btn">회원가입</button>
+        <button type="submit" class="signupBtn">회원가입</button>
       </form>
 
-      <p class="login-text">
+      <p class="loginText">
         이미 계정이 있으신가요?
-        <router-link to="/login" class="login-link">로그인</router-link>
+        <router-link to="/login" class="loginLink">로그인</router-link>
       </p>
     </div>
   </div>
@@ -213,8 +213,7 @@ const handleSignUp = async () => {
 </script>
 
 <style scoped>
-/* 기존 스타일 유지 + 중복 확인 스타일 추가 */
-.signup-container {
+.signupContainer {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -228,7 +227,7 @@ const handleSignUp = async () => {
   background-color: #f8f9fa;
 }
 
-.signup-box {
+.signupBox {
   background-color: white;
   border-radius: 12px;
   padding: 40px;
@@ -236,17 +235,17 @@ const handleSignUp = async () => {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
-.input-with-button {
+.inputWithButton {
   display: flex;
   gap: 8px;
   margin-bottom: 10px;
 }
 
-.input-with-button input {
+.inputWithButton input {
   flex: 1;
 }
 
-.check-btn {
+.checkBtn {
   height: auto;
   cursor: pointer;
   margin-bottom: 20px;
@@ -298,7 +297,7 @@ select {
   font-family: inherit;
 }
 
-.password-field {
+.passwordField {
   position: relative;
 }
 
@@ -329,13 +328,13 @@ select {
   text-align: left;
 }
 
-.gender-buttons {
+.genderButtons {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
 }
 
-.gender-buttons button {
+.genderButtons button {
   flex: 1;
   padding: 10px;
   border: 1px solid #ddd;
@@ -347,18 +346,18 @@ select {
   color: #333;
 }
 
-.gender-buttons button:hover {
+.genderButtons button:hover {
   background-color: #ffc7ef;
   color: black;
 }
 
-.gender-buttons button.selected {
+.genderButtons button.selected {
   background-color: #ffc7ef;
   color: black;
   border: 1px solid #ffc7ef;
 }
 
-.signup-btn {
+.signupBtn {
   width: 100%;
   padding: 12px;
   background-color: #ffb6dc;
@@ -370,25 +369,25 @@ select {
   cursor: pointer;
 }
 
-.signup-btn:hover {
+.signupBtn:hover {
   background-color: #f59fc8;
 }
 
-.login-text {
+.loginText {
   margin-top: 20px;
   text-align: center;
   font-size: 14px;
   color: #181818;
 }
 
-.login-link {
+.loginLink {
   color: #ff6aa6;
   text-decoration: none;
   font-weight: bold;
   margin-left: 5px;
 }
 
-.login-link:hover {
+.loginLink:hover {
   text-decoration: underline;
 }
 .warning {

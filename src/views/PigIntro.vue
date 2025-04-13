@@ -21,7 +21,7 @@ const handleMouseMove = (e) => {
 </script>
 
 <template>
-  <div class="entire-container">
+  <div class="entireContainer">
     <Header />
     <div class="wrapper" @mousemove="handleMouseMove">
       <h1 class="title">Piggy Bank</h1>

@@ -1,22 +1,22 @@
 <template>
   <h3>고정 지출</h3>
-  <div class="fixed-expenses">
+  <div class="fixedExpenses">
     <!-- 테이블 헤더 -->
-    <div class="expense-header">
+    <div class="expenseHeader">
       <span>일자</span>
       <span>항목</span>
       <span>금액</span>
     </div>
 
     <!-- 고정 지출 항목 -->
-    <div v-for="expense in expenses" :key="expense.id" class="expense-item">
+    <div v-for="expense in expenses" :key="expense.id" class="expenseItem">
       <span>{{ expense.day }}일</span>
       <span>{{ expense.description }}</span>
       <span>{{ expense.amount.toLocaleString() }}원</span>
     </div>
 
     <!-- 총합 -->
-    <div class="total-expenses">총 {{ totalAmount.toLocaleString() }}원</div>
+    <div class="totalExpenses">총 {{ totalAmount.toLocaleString() }}원</div>
   </div>
 </template>
 
@@ -30,23 +30,23 @@ const expenses = ref([]);
 // 총합 계산
 const totalAmount = ref(0);
 const savingGoal = ref(null);
+
 // 데이터 가져오기
 const fetchData = async () => {
   try {
-    const UserId = localStorage.getItem('loggedInUserId');
+    const userId = localStorage.getItem('loggedInUserId');
     const responseGoal = await axios.get(
-      `http://localhost:3000/user/${UserId}`
+      `http://localhost:3000/user/${userId}`
     );
     savingGoal.value = responseGoal.data.goalSavings;
 
     const res = await axios.get('http://localhost:3000/fixedExpenses');
     expenses.value = Array.isArray(res.data)
       ? res.data
-          .filter((entry) => entry.userid == UserId && entry.deletedAt === null)
-          .sort((a, b) => a.day - b.day) // day 값을 기준으로 오름차순 정렬
+          .filter((entry) => entry.userid == userId && entry.deletedAt === null)
+          .sort((a, b) => a.day - b.day)
       : [];
 
-    // 총합 계산
     totalAmount.value = expenses.value.reduce(
       (sum, expense) => sum + expense.amount,
       0
@@ -62,25 +62,26 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.dark .fixed-expenses {
-  background-color: #374151; /* 어두운 배경 */
-  border: 1px solid #4b5563; /* 어두운 테두리 */
+.dark .fixedExpenses {
+  background-color: #374151;
+  border: 1px solid #4b5563;
   color: #e5e7eb;
 }
-.dark .expense-item,
-.dark .total-expenses {
+.dark .expenseItem,
+.dark .totalExpenses {
   color: #e5e7eb;
 }
-.dark .expense-header {
+.dark .expenseHeader {
   color: #83a4eb;
 }
-.fixed-expenses {
+
+.fixedExpenses {
   border-radius: 8px;
   padding: 1rem;
   background-color: #f9fafb;
 }
 
-.expense-header {
+.expenseHeader {
   display: flex;
   justify-content: space-between;
   font-weight: bold;
@@ -88,7 +89,7 @@ onMounted(() => {
   color: #2563eb;
 }
 
-.expense-item {
+.expenseItem {
   display: flex;
   justify-content: space-between;
   margin-bottom: 0.5rem;
@@ -96,7 +97,7 @@ onMounted(() => {
   color: #374151;
 }
 
-.total-expenses {
+.totalExpenses {
   text-align: right;
   font-weight: bold;
   color: #111827;

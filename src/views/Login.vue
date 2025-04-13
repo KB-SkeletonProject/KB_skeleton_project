@@ -1,8 +1,8 @@
 <template>
-  <div class="login-wrapper">
+  <div class="loginWrapper">
     <Piggyface :eyeOffset="eyeOffset" :isEyeClosed="isEyeClosed" />
-    <div class="login-container">
-      <div class="login-box">
+    <div class="loginContainer">
+      <div class="loginBox">
         <h2 class="title">로그인</h2>
         <form @submit.prevent="handleLogin">
           <label>아이디</label>
@@ -19,11 +19,11 @@
             v-model="password"
             @input="handlePasswordInput"
           />
-          <button type="submit" class="login-btn">로그인</button>
+          <button type="submit" class="loginBtn">로그인</button>
         </form>
-        <p class="signup-text">
+        <p class="signupText">
           아직 회원이 아니신가요?
-          <router-link to="/signup" class="signup-link">회원가입</router-link>
+          <router-link to="/signup" class="signupLink">회원가입</router-link>
         </p>
       </div>
     </div>
@@ -97,7 +97,7 @@ const handlePasswordInput = (e) => {
 </script>
 
 <style scoped>
-.login-wrapper {
+.loginWrapper {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -111,7 +111,7 @@ const handlePasswordInput = (e) => {
   background-color: #f8f9fa;
 }
 
-.login-box {
+.loginBox {
   background-color: white;
   border: 2px solid #a6d1f2;
   border-radius: 10px;
@@ -144,7 +144,7 @@ input {
   font-size: 14px;
 }
 
-.login-btn {
+.loginBtn {
   width: 100%;
   padding: 12px;
   background-color: #ffb6dc;
@@ -156,25 +156,25 @@ input {
   font-weight: bold;
 }
 
-.login-btn:hover {
+.loginBtn:hover {
   background-color: #f59fc8;
 }
 
-.signup-text {
+.signupText {
   margin-top: 15px;
   text-align: center;
   font-size: 14px;
   color: #181818;
 }
 
-.signup-link {
+.signupLink {
   color: #ff6aa6;
   text-decoration: none;
   font-weight: bold;
   margin-left: 5px;
 }
 
-.signup-link:hover {
+.signupLink:hover {
   text-decoration: underline;
 }
 </style>

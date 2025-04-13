@@ -1,16 +1,16 @@
 <template>
-  <div class="calendar-wrapper">
-    <header class="calendar-header">
+  <div class="calendarWrapper">
+    <header class="calendarHeader">
       <h2>{{ currentYear }}년 {{ currentMonth + 1 }}월</h2>
-      <div class="right-section">
-        <div class="label-section">
-          <span class="label income-label">● 수입</span>
-          <span class="label expense-label">● 지출</span>
+      <div class="rightSection">
+        <div class="labelSection">
+          <span class="label incomeLabel">● 수입</span>
+          <span class="label expenseLabel">● 지출</span>
         </div>
-        <button class="arrow-button" @click="prevMonth">
+        <button class="arrowButton" @click="prevMonth">
           <img src="/arrow2.png" alt="Previous Month" />
         </button>
-        <button class="arrow-button" @click="nextMonth">
+        <button class="arrowButton" @click="nextMonth">
           <img src="/arrow.png" alt="Next Month" />
         </button>
       </div>
@@ -22,21 +22,21 @@
       </div>
     </div>
 
-    <div class="calendar-grid">
+    <div class="calendarGrid">
       <div
         v-for="(day, index) in calendarData"
         :key="index"
-        class="calendar-cell"
+        class="calendarCell"
         @click="openModal(day)"
-        :class="{ 'non-current': !day.isCurrentMonth }"
+        :class="{ nonCurrent: !day.isCurrentMonth }"
       >
-        <span class="cell-date">{{ day.date.getDate() }}</span>
-        <div class="cell-details">
+        <span class="cellDate">{{ day.date.getDate() }}</span>
+        <div class="cellDetails">
           <p v-if="day.income" class="income">{{ formatNumber(day.income) }}</p>
           <p v-if="day.expense" class="expense">
             {{ formatNumber(day.expense) }}
           </p>
-          <p v-if="day.fixedExpense" class="fixed-expense">
+          <p v-if="day.fixedExpense" class="fixedExpense">
             {{ formatNumber(day.fixedExpense) }}
           </p>
         </div>
@@ -198,17 +198,17 @@ function nextMonth() {
 </script>
 
 <style scoped>
-.dark .calendar-wrapper,
-.dark .calendar-header,
-.dark .calendar-grid {
+.dark .calendarWrapper,
+.dark .calendarHeader,
+.dark .calendarGrid {
   background-color: #1f2937;
   color: #e5e7eb;
 }
-.dark .calendar-cell {
+.dark .calendarCell {
   background-color: #374151;
   border: 1px solid #4b5563;
 }
-.calendar-wrapper {
+.calendarWrapper {
   max-width: 1200px;
   margin: 1rem auto;
   background: #fff;
@@ -217,7 +217,7 @@ function nextMonth() {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.label-section {
+.labelSection {
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -230,36 +230,36 @@ function nextMonth() {
   align-items: center;
 }
 
-.income-label {
+.incomeLabel {
   color: #16a34a;
 }
-.fixed-expense {
+.fixedExpense {
   color: #facc15; /* 노란색 */
   font-weight: bold;
 }
-.expense-label {
+.expenseLabel {
   color: #ef4444;
 }
-.calendar-header {
+.calendarHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
 }
 
-.right-section {
+.rightSection {
   display: flex;
   gap: 0.5rem;
 }
 
-.arrow-button {
+.arrowButton {
   background: none;
   border: none;
   font-size: 1.25rem;
   cursor: pointer;
   padding: 0.25rem 0.5rem;
 }
-.arrow-button img {
+.arrowButton img {
   width: 50px;
   height: 50px;
   object-fit: contain;
@@ -273,13 +273,13 @@ function nextMonth() {
   color: #64748b;
 }
 
-.calendar-grid {
+.calendarGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 1rem;
 }
 
-.calendar-cell {
+.calendarCell {
   position: relative;
   height: 100px;
   background: #f8fafc;
@@ -289,14 +289,14 @@ function nextMonth() {
   cursor: pointer; /* 클릭 가능한 상태로 설정 */
 }
 
-.cell-date {
+.cellDate {
   position: absolute;
   top: 8px;
   left: 8px;
   font-weight: 500;
 }
 
-.cell-details {
+.cellDetails {
   margin-top: 1rem;
   display: flex;
   flex-direction: column;
@@ -304,7 +304,7 @@ function nextMonth() {
 }
 .income,
 .expense,
-.fixed-expense {
+.fixedExpense {
   margin: 0.8rem 0 0.1rem 0;
   padding: 0;
   line-height: 1.2;
@@ -318,101 +318,101 @@ function nextMonth() {
   color: #ef4444;
 }
 
-.non-current {
+.nonCurrent {
   opacity: 0.5;
   pointer-events: none; /* 비활성화된 날짜는 클릭 불가 */
 }
 @media (max-width: 1024px) {
-  .calendar-wrapper {
+  .calendarWrapper {
     padding: 1rem;
   }
 
-  .calendar-grid {
+  .calendarGrid {
     gap: 0.5rem;
   }
 
-  .calendar-cell {
+  .calendarCell {
     height: 80px;
     padding: 6px;
   }
 
-  .cell-details {
+  .cellDetails {
     font-size: 0.75rem;
   }
 
   .income,
   .expense,
-  .fixed-expense {
+  .fixedExpense {
     display: none; /* 수입, 지출, 고정 지출 숨기기 */
   }
 
-  .arrow-button img {
+  .arrowButton img {
     width: 40px;
     height: 40px;
   }
 }
 
 @media (max-width: 768px) {
-  .calendar-header {
+  .calendarHeader {
     flex-direction: column; /* 헤더를 세로로 정렬 */
     align-items: flex-start;
   }
 
-  .label-section {
+  .labelSection {
     margin-left: 0;
     margin-bottom: 1rem;
   }
 
-  .calendar-grid {
+  .calendarGrid {
     gap: 0.5rem;
   }
 
-  .calendar-cell {
+  .calendarCell {
     height: 70px;
     padding: 4px;
   }
 
-  .cell-details {
+  .cellDetails {
     font-size: 0.7rem;
   }
 
   .income,
   .expense,
-  .fixed-expense {
+  .fixedExpense {
     display: none; /* 수입, 지출, 고정 지출 숨기기 */
   }
 
-  .arrow-button img {
+  .arrowButton img {
     width: 30px;
     height: 30px;
   }
 }
 
 @media (max-width: 480px) {
-  .calendar-wrapper {
+  .calendarWrapper {
     padding: 0.5rem;
   }
 
-  .calendar-grid {
+  .calendarGrid {
     gap: 0.25rem;
   }
 
-  .calendar-cell {
+  .calendarCell {
     height: 60px;
     padding: 4px;
   }
 
-  .cell-details {
+  .cellDetails {
     font-size: 0.65rem;
   }
 
   .income,
   .expense,
-  .fixed-expense {
+  .fixedExpense {
     display: none; /* 수입, 지출, 고정 지출 숨기기 */
   }
 
-  .arrow-button img {
+  .arrowButton img {
     width: 25px;
     height: 25px;
   }

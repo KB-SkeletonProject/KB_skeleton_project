@@ -1,7 +1,7 @@
 <template>
   <!-- 메인 모달 -->
-  <div class="modal-overlay" @click.self="emit('close')">
-    <div class="modal-content">
+  <div class="modalOverlay" @click.self="emit('close')">
+    <div class="modalContent">
       <h2>금융 일정 관리</h2>
       <p class="description">
         정기적인 지출을 저장해두고, 효과적으로 관리해보세요!
@@ -24,59 +24,59 @@
       </div>
 
       <!-- 금융 일정 추가 탭 -->
-      <div v-if="activeTab === 'add'" class="tab-content">
-        <div class="form-group">
-          <label for="date-picker">날짜</label>
+      <div v-if="activeTab === 'add'" class="tabContent">
+        <div class="formGroup">
+          <label for="datePicker">날짜</label>
           <input
-            id="date-picker"
+            id="datePicker"
             type="number"
             v-model="newExpense.day"
             placeholder="일자 입력 (예: 7)"
-            class="date-input"
+            class="dateInput"
           />
         </div>
-        <div class="form-group">
+        <div class="formGroup">
           <label>금액</label>
           <input
             type="number"
             v-model="newExpense.amount"
             placeholder="금액 입력"
-            class="amount-input"
+            class="amountInput"
           />
         </div>
-        <div class="form-group">
+        <div class="formGroup">
           <label>일정 이름</label>
           <input
             type="text"
             v-model="newExpense.description"
             placeholder="일정 이름 입력"
-            class="description-input"
+            class="descriptionInput"
           />
         </div>
-        <div class="form-group">
-          <label class="inline-label">
+        <div class="formGroup">
+          <label class="inlineLabel">
             <input type="checkbox" v-model="newExpense.notify" />
             일정 하루 전날 알림을 받으실 수 있습니다.
           </label>
         </div>
       </div>
-      <div v-if="activeTab === 'add'" class="submit-button">
+      <div v-if="activeTab === 'add'" class="submitButton">
         <button @click="addFixedExpense">금융 일정 추가하기</button>
       </div>
 
       <!-- 금융 일정 수정 탭 -->
-      <div v-if="activeTab === 'edit'" class="tab-content edit-tab">
-        <div class="schedule-item" :key="currentIndex">
-          <p class="expense-description">{{ currentExpense.description }}</p>
-          <p class="expense-details">
+      <div v-if="activeTab === 'edit'" class="tabContent editTab">
+        <div class="scheduleItem" :key="currentIndex">
+          <p class="expenseDescription">{{ currentExpense.description }}</p>
+          <p class="expenseDetails">
             매달 {{ currentExpense.day }}일 /
             {{ formatNumber(currentExpense.amount) }}원 / 지출
           </p>
-          <p class="expense-notify" v-if="currentExpense.notify">알림 설정됨</p>
-          <p class="expense-notify" v-else>알림 설정 안 됨</p>
+          <p class="expenseNotify" v-if="currentExpense.notify">알림 설정됨</p>
+          <p class="expenseNotify" v-else>알림 설정 안 됨</p>
         </div>
 
-        <div class="navigation-buttons">
+        <div class="navigationButtons">
           <button @click="prevExpense" :disabled="currentIndex === 0">
             이전
           </button>
@@ -89,46 +89,46 @@
         </div>
       </div>
 
-      <div v-if="activeTab === 'edit'" class="modify-button">
+      <div v-if="activeTab === 'edit'" class="modifyButton">
         <button @click="enableEditMode">수정하기</button>
         <!-- 삭제 버튼 클릭 시 삭제 옵션 모달을 띄움 -->
-        <button @click="triggerDeleteOptions" class="delete-button">
+        <button @click="triggerDeleteOptions" class="deleteButton">
           삭제하기
         </button>
       </div>
 
-      <button class="close-button" @click="emit('close')">닫기</button>
+      <button class="closeButton" @click="emit('close')">닫기</button>
     </div>
   </div>
 
   <!-- 삭제 옵션 모달 -->
   <div
     v-if="showDeleteOptions"
-    class="modal-overlay delete-modal-overlay"
+    class="modalOverlay deleteModalOverlay"
     @click.self="cancelDelete"
   >
-    <div class="modal-content delete-modal-content">
+    <div class="modalContent deleteModalContent">
       <p class="title">❗ 삭제 옵션을 선택해주세요</p>
-      <div class="option-cards">
+      <div class="optionCards">
         <div
-          :class="['option-card', deleteOption === 'future' ? 'selected' : '']"
+          :class="['optionCard', deleteOption === 'future' ? 'selected' : '']"
           @click="deleteOption = 'future'"
         >
           <p class="emoji">🗓️</p>
-          <p class="option-title">이번 달까지 유지</p>
-          <p class="option-desc">이번 달까지 반영, 이후부터 삭제됩니다.</p>
+          <p class="optionTitle">이번 달까지 유지</p>
+          <p class="optionDesc">이번 달까지 반영, 이후부터 삭제됩니다.</p>
         </div>
         <div
-          :class="['option-card', deleteOption === 'all' ? 'selected' : '']"
+          :class="['optionCard', deleteOption === 'all' ? 'selected' : '']"
           @click="deleteOption = 'all'"
         >
           <p class="emoji">🚫</p>
-          <p class="option-title">즉시 완전 삭제</p>
-          <p class="option-desc">이번 달부터 삭제됩니다.</p>
+          <p class="optionTitle">즉시 완전 삭제</p>
+          <p class="optionDesc">이번 달부터 삭제됩니다.</p>
         </div>
       </div>
 
-      <div class="edit-buttons">
+      <div class="editButtons">
         <button @click="cancelDelete">취소</button>
         <button @click="confirmDelete">삭제 진행</button>
       </div>
@@ -136,28 +136,28 @@
   </div>
 
   <!-- 수정하기 모달 (별도 오버레이) -->
-  <div v-if="editMode" class="edit-modal-overlay" @click.self="cancelEdit">
-    <div class="edit-modal-content">
+  <div v-if="editMode" class="editModalOverlay" @click.self="cancelEdit">
+    <div class="editModalContent">
       <h2>수정하기</h2>
-      <div class="form-group">
+      <div class="formGroup">
         <label>날짜</label>
         <input type="number" v-model="editableExpense.day" />
       </div>
-      <div class="form-group">
+      <div class="formGroup">
         <label>금액</label>
         <input type="number" v-model="editableExpense.amount" />
       </div>
-      <div class="form-group">
+      <div class="formGroup">
         <label>일정 이름</label>
         <input type="text" v-model="editableExpense.description" />
       </div>
-      <div class="form-group">
-        <label class="inline-label">
+      <div class="formGroup">
+        <label class="inlineLabel">
           <input type="checkbox" v-model="editableExpense.notify" />
           일정 하루 전날 알림
         </label>
       </div>
-      <div class="edit-buttons">
+      <div class="editButtons">
         <button @click="updateFixedExpense">저장하기</button>
         <button @click="cancelEdit">취소하기</button>
       </div>
@@ -353,11 +353,11 @@ onMounted(() => {
   color: #f9fafb;
 }
 
-.dark .modal-overlay {
+.dark .modalOverlay {
   background: rgba(0, 0, 0, 0.8);
 }
 
-.dark .modal-content {
+.dark .modalContent {
   background-color: #1f2937;
   color: #f9fafb;
   border: 1px solid #374151;
@@ -387,40 +387,40 @@ onMounted(() => {
   color: #9ca3af;
 }
 
-.dark .submit-button button,
-.dark .modify-button button,
-.dark .edit-buttons button,
-.dark .delete-button button {
+.dark .submitButton button,
+.dark .modifyButton button,
+.dark .editButtons button,
+.dark .deleteButton button {
   background-color: #4b5563;
   color: #f9fafb;
   border: 1px solid #6b7280;
   transition: background-color 0.3s ease;
 }
 
-.dark .submit-button button:hover,
-.dark .modify-button button:hover,
-.dark .edit-buttons button:hover,
-.dark .delete-button button:hover {
+.dark .submitButton button:hover,
+.dark .modifyButton button:hover,
+.dark .editButtons button:hover,
+.dark .deleteButton button:hover {
   background-color: #6b7280;
 }
 
-.dark .delete-button {
+.dark .deleteButton {
   background-color: #ef4444;
   color: #ffffff;
   border: 1px solid #b91c1c;
 }
 
-.dark .delete-button:hover {
+.dark .deleteButton:hover {
   background-color: #dc2626;
 }
 
-.dark .edit-modal-content {
+.dark .editModalContent {
   background-color: #1f2937;
   color: #f9fafb;
   border: 1px solid #374151;
 }
 
-.modal-overlay {
+.modalOverlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -433,7 +433,7 @@ onMounted(() => {
   z-index: 1000;
 }
 
-.modal-content {
+.modalContent {
   position: relative;
   background: #fff;
   padding: 1.5rem;
@@ -482,15 +482,15 @@ h2 {
   border-color: #ffc7ef;
 }
 
-.tab-content {
+.tabContent {
   margin-bottom: 2.5rem;
 }
 
-.form-group {
+.formGroup {
   margin-bottom: 1rem;
 }
 
-.form-group label {
+.formGroup label {
   display: block;
   font-size: 0.95rem;
   color: #374151;
@@ -509,7 +509,7 @@ input[type='number'] {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.inline-label {
+.inlineLabel {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -517,7 +517,7 @@ input[type='number'] {
   color: #374151;
 }
 
-.close-button {
+.closeButton {
   width: 100%;
   padding: 0.75rem;
   background: #e5e7eb;
@@ -529,17 +529,17 @@ input[type='number'] {
   transition: background 0.2s ease;
 }
 
-.close-button:hover {
+.closeButton:hover {
   background: #d1d5db;
 }
 
-.navigation-buttons {
+.navigationButtons {
   display: flex;
   justify-content: space-between;
   margin-top: 1rem;
 }
 
-.navigation-buttons button {
+.navigationButtons button {
   padding: 0.5rem 1rem;
   border: 1px solid #e5e7eb;
   background: #f9fafb;
@@ -550,18 +550,18 @@ input[type='number'] {
   transition: background 0.2s ease;
 }
 
-.navigation-buttons button:disabled {
+.navigationButtons button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.submit-button {
+.submitButton {
   margin-top: 2rem;
   text-align: left;
   display: flex;
 }
 
-.submit-button button {
+.submitButton button {
   width: 100%;
   padding: 0.75rem;
   background: #ffc7ef;
@@ -574,7 +574,7 @@ input[type='number'] {
   margin-bottom: 1rem;
 }
 
-.modify-button {
+.modifyButton {
   display: flex;
   padding: 0.75rem 0;
   gap: 1rem;
@@ -582,11 +582,11 @@ input[type='number'] {
   margin: 1rem 0;
 }
 
-.submit-button button:hover {
+.submitButton button:hover {
   background: #ffb3e6;
 }
 
-.modify-button button {
+.modifyButton button {
   background-color: #ffc7ef;
   width: 600px;
   color: #1a1a1a;
@@ -598,11 +598,11 @@ input[type='number'] {
   transition: background 0.2s ease;
 }
 
-.modify-button button:hover {
+.modifyButton button:hover {
   background-color: #ffb3e6;
 }
 
-.edit-modal-overlay {
+.editModalOverlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -615,7 +615,7 @@ input[type='number'] {
   z-index: 1100;
 }
 
-.edit-modal-content {
+.editModalContent {
   background: #fff;
   padding: 1.5rem;
   border-radius: 12px;
@@ -625,20 +625,20 @@ input[type='number'] {
   text-align: left;
 }
 
-.edit-buttons {
+.editButtons {
   display: flex;
   gap: 1rem;
   justify-content: center;
   margin-top: 1rem;
 }
 
-.option-cards {
+.optionCards {
   display: flex;
   gap: 1rem;
   margin: 1rem 0;
 }
 
-.option-card {
+.optionCard {
   flex: 1;
   border: 2px solid #e5e7eb;
   border-radius: 12px;
@@ -648,21 +648,21 @@ input[type='number'] {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.option-card:hover {
+.optionCard:hover {
   border-color: #aaa;
 }
 
-.option-card.selected {
+.optionCard.selected {
   border-color: #ef4444;
   box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
 }
 
-.option-title {
+.optionTitle {
   font-weight: bold;
   margin: 0.5rem 0;
 }
 
-.option-desc {
+.optionDesc {
   font-size: 0.875rem;
   color: #6b7280;
 }
@@ -673,7 +673,7 @@ input[type='number'] {
   margin-top: 1.5rem;
 }
 
-.edit-buttons button {
+.editButtons button {
   background-color: #ffc7ef;
   color: #1a1a1a;
   border: none;
@@ -684,7 +684,7 @@ input[type='number'] {
   transition: background 0.2s ease;
 }
 
-.edit-buttons button:hover {
+.editButtons button:hover {
   background-color: #ffb3e6;
 }
 </style>

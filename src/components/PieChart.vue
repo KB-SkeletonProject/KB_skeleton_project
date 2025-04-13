@@ -1,5 +1,5 @@
 <template>
-  <div class="chart-container">
+  <div class="chartContainer">
     <Bar v-if="chartData" :data="chartData" :options="chartOptions" />
   </div>
 </template>
@@ -61,7 +61,7 @@ const chartOptions = {
   },
 };
 
-// ✅ 최근 6개월을 기준으로 데이터 가공
+// 최근 6개월을 기준으로 데이터 가공
 const updateChartData = () => {
   if (props.chartData && props.chartData.length > 0) {
     const now = new Date();
@@ -110,12 +110,12 @@ const updateChartData = () => {
   }
 };
 
-// 🚀 컴포넌트 마운트 시 데이터 초기화
+// 컴포넌트 마운트 시 데이터 초기화
 onMounted(() => {
   updateChartData();
 });
 
-// 👀 props가 바뀔 때마다 차트 데이터 재계산
+// props가 바뀔 때마다 차트 데이터 재계산
 watch(
   () => props.chartData,
   (newData) => {
@@ -126,7 +126,7 @@ watch(
 </script>
 
 <style scoped>
-.chart-container {
+.chartContainer {
   position: relative;
   height: 400px;
   width: 100%;
