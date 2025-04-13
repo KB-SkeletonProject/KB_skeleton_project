@@ -1,57 +1,55 @@
 <template>
-  <div class="month-summary-container">
+  <div class="monthSummaryContainer">
     <!-- 상단 요약 영역 -->
-    <div class="summary-header">
-      <div class="summary-box income">
+    <div class="summaryHeader">
+      <div class="summaryBox income">
         총 수입<br />{{ formatMoney(totalIncome) }}
       </div>
-      <div class="summary-box expense">
+      <div class="summaryBox expense">
         총 지출<br />{{ formatMoney(totalExpense) }}
       </div>
-      <div class="summary-box balance">
-        잔액<br />{{ formatMoney(balance) }}
-      </div>
+      <div class="summaryBox balance">잔액<br />{{ formatMoney(balance) }}</div>
     </div>
 
     <!-- 그래프 영역 (두개로 분리해서 나란히 배치) -->
-    <div class="graphs-flex-container">
+    <div class="graphsFlexContainer">
       <!-- 카테고리별 수입 그래프 -->
-      <div class="category-bars income-bars">
+      <div class="categoryBars incomeBars">
         <h3>카테고리별 수입 현황</h3>
         <div
           v-for="catId in incomeCategoryIds"
           :key="'income' + catId"
-          class="category-bar"
+          class="categoryBar"
         >
           <div class="label">{{ getCategoryName(catId) }}</div>
-          <div class="bar-container">
+          <div class="barContainer">
             <div
-              class="bar income-bar"
+              class="bar incomeBar"
               :style="{ width: getIncomeBarWidth(catId) + '%' }"
             ></div>
           </div>
-          <div class="amount income-amount">
+          <div class="amount incomeAmount">
             {{ formatMoney(categoryIncomes[catId]) }}
           </div>
         </div>
       </div>
 
       <!-- 카테고리별 지출 그래프 -->
-      <div class="category-bars expense-bars">
+      <div class="categoryBars expenseBars">
         <h3>카테고리별 지출 현황</h3>
         <div
           v-for="catId in expenseCategoryIds"
           :key="'expense' + catId"
-          class="category-bar"
+          class="categoryBar"
         >
           <div class="label">{{ getCategoryName(catId) }}</div>
-          <div class="bar-container">
+          <div class="barContainer">
             <div
-              class="bar expense-bar"
+              class="bar expenseBar"
               :style="{ width: getExpenseBarWidth(catId) + '%' }"
             ></div>
           </div>
-          <div class="amount expense-amount">
+          <div class="amount expenseAmount">
             {{ formatMoney(categoryExpenses[catId]) }}
           </div>
         </div>
@@ -197,29 +195,29 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.dark .month-summary-container,
-.dark .summary-header {
+.dark .monthSummaryContainer,
+.dark .summaryHeader {
   background-color: #1f2937; /* dark:bg-gray-800 */
   color: #f9fafb; /* dark:text-gray-200 */
   border: 1px solid #1f2937; /* 어두운 테두리 */
 }
-.dark .summary-box {
+.dark .summaryBox {
   background-color: #374151; /* 어두운 배경 */
   border: 1px solid #4b5563; /* 어두운 테두리 */
 }
 /* 카테고리 바 리스트 */
-.dark .category-bars h3 {
+.dark .categoryBars h3 {
   color: #f9fafb; /* 밝은 텍스트 */
 }
 
-.dark .category-bar .label {
+.dark .categoryBar .label {
   color: #f9fafb; /* 밝은 텍스트 */
 }
-.dark .category-bar .amount {
+.dark .categoryBar .amount {
   color: #f9fafb; /* 밝은 텍스트 */
 }
 
-.month-summary-container {
+.monthSummaryContainer {
   max-width: 1200px;
   margin: 2rem auto;
   padding: 1rem;
@@ -229,29 +227,29 @@ onMounted(async () => {
 }
 
 /* 상단 요약 영역 */
-.summary-header {
+.summaryHeader {
   display: flex;
   justify-content: space-between;
   margin-bottom: 2rem;
   text-align: center;
 }
-.graphs-flex-container {
+.graphsFlexContainer {
   display: flex;
   gap: 2rem;
   margin-top: 2rem;
 }
 
-.category-bars {
+.categoryBars {
   flex: 1;
 }
 
-.category-bars h3 {
+.categoryBars h3 {
   margin-bottom: 1rem;
   font-size: 1.25rem;
   color: #374151;
 }
 
-.category-bar {
+.categoryBar {
   display: flex;
   align-items: center;
   margin-bottom: 0.5rem;
@@ -262,7 +260,7 @@ onMounted(async () => {
   font-size: 0.875rem;
 }
 
-.bar-container {
+.barContainer {
   flex: 1;
   height: 8px;
   background: #f1f5f9;
@@ -277,11 +275,11 @@ onMounted(async () => {
   transition: width 0.3s ease;
 }
 
-.expense-bar {
+.expenseBar {
   background-color: #3b82f6; /* 파랑 (지출) */
 }
 
-.income-bar {
+.incomeBar {
   background-color: #22c55e; /* 초록 (수입) */
 }
 
@@ -291,15 +289,15 @@ onMounted(async () => {
   font-size: 0.875rem;
 }
 
-.expense-amount {
+.expenseAmount {
   color: #3b82f6;
 }
 
-.income-amount {
+.incomeAmount {
   color: #22c55e;
 }
 
-.summary-box {
+.summaryBox {
   flex: 1;
   margin: 0 0.5rem;
   padding: 1rem;
@@ -307,14 +305,14 @@ onMounted(async () => {
   background: #f9fafb;
   border: 1px solid #e5e7eb;
 }
-.category-bar {
+.categoryBar {
   display: flex;
   align-items: center;
   margin-bottom: 0.5rem;
   gap: 10px;
 }
 
-.bar-container {
+.barContainer {
   flex: 1;
   display: flex;
   position: relative;
@@ -328,13 +326,13 @@ onMounted(async () => {
   border-radius: 5px;
 }
 
-.expense-bar {
+.expenseBar {
   background-color: #3b82f6; /* 파란색 (지출) */
   position: absolute;
   left: 0;
 }
 
-.income-bar {
+.incomeBar {
   background-color: #22c55e; /* 초록색 (수입) */
   position: absolute;
   left: 0;
@@ -351,50 +349,50 @@ onMounted(async () => {
   text-align: right;
 }
 
-.expense-amount {
+.expenseAmount {
   color: #3b82f6;
 }
 
-.income-amount {
+.incomeAmount {
   color: #22c55e;
 }
 
 /* 예시 색상 (녹색 / 빨간색 / 파랑) */
-.summary-box.income {
+.summaryBox.income {
   color: #10b981; /* 녹색 */
 }
-.summary-box.expense {
+.summaryBox.expense {
   color: #ef4444; /* 빨간색 */
 }
-.summary-box.balance {
+.summaryBox.balance {
   color: #3b82f6; /* 파랑 */
 }
 
 /* 카테고리 바 리스트 */
-.category-bars {
+.categoryBars {
   margin-top: 2rem;
 }
-.category-bars h3 {
+.categoryBars h3 {
   margin-bottom: 1rem;
   font-size: 1.25rem;
   color: #374151;
 }
 
-.category-bar {
+.categoryBar {
   display: flex;
   align-items: center;
   margin-bottom: 1rem;
 }
 
 /* 카테고리 이름 */
-.category-bar .label {
+.categoryBar .label {
   width: 80px;
   font-size: 0.875rem;
   color: #374151;
 }
 
 /* 가로 막대 컨테이너 */
-.bar-container {
+.barContainer {
   flex: 1;
   height: 8px;
   background: #f1f5f9;
@@ -404,7 +402,7 @@ onMounted(async () => {
 }
 
 /* 실제 막대 */
-.bar-container .bar {
+.barContainer .bar {
   height: 100%;
   background: #3b82f6; /* 파랑 막대 */
   border-radius: 4px;
@@ -412,29 +410,29 @@ onMounted(async () => {
 }
 
 /* 금액 표시 */
-.category-bar .amount {
+.categoryBar .amount {
   width: 80px;
   text-align: right;
   font-size: 0.875rem;
   color: #374151;
 }
 @media (max-width: 1024px) {
-  .summary-header {
+  .summaryHeader {
     flex-wrap: wrap;
     gap: 1rem;
   }
 
-  .summary-box {
+  .summaryBox {
     flex: 1 1 calc(50% - 1rem);
     margin: 0.5rem;
   }
 
-  .graphs-flex-container {
+  .graphsFlexContainer {
     flex-direction: column;
     gap: 1.5rem;
   }
 
-  .category-bars h3 {
+  .categoryBars h3 {
     font-size: 1.1rem;
   }
 
@@ -448,22 +446,22 @@ onMounted(async () => {
 }
 
 @media (max-width: 768px) {
-  .summary-header {
+  .summaryHeader {
     flex-direction: column;
     gap: 1rem;
   }
 
-  .summary-box {
+  .summaryBox {
     flex: none;
     width: 100%;
     margin: 0.5rem 0;
   }
 
-  .graphs-flex-container {
+  .graphsFlexContainer {
     gap: 1rem;
   }
 
-  .category-bars h3 {
+  .categoryBars h3 {
     font-size: 1rem;
   }
 
@@ -477,24 +475,24 @@ onMounted(async () => {
 }
 
 @media (max-width: 480px) {
-  .month-summary-container {
+  .monthSummaryContainer {
     padding: 0.5rem;
   }
 
-  .summary-header {
+  .summaryHeader {
     gap: 0.5rem;
   }
 
-  .summary-box {
+  .summaryBox {
     padding: 0.75rem;
     font-size: 0.9rem;
   }
 
-  .graphs-flex-container {
+  .graphsFlexContainer {
     gap: 0.5rem;
   }
 
-  .category-bars h3 {
+  .categoryBars h3 {
     font-size: 0.9rem;
   }
 

@@ -99,9 +99,9 @@ const confirmDelete = async () => {
         <button class="logout" @click="openLogoutModal">로그아웃</button>
         <button class="logout" @click="openDeleteModal">회원탈퇴</button>
         <div v-if="isLogoutModalOpen" class="modal">
-          <div class="modal-content">
+          <div class="modalContent">
             <p>로그아웃 하시겠습니까?</p>
-            <div class="button-group">
+            <div class="buttonGroup">
               <button @click="cancelLogout">취소</button>
               <button @click="confirmLogout">확인</button>
             </div>
@@ -109,11 +109,11 @@ const confirmDelete = async () => {
         </div>
         <!-- 탈퇴 모달 -->
         <div v-if="isDeleteModalOpen" class="modal">
-          <div class="modal-content">
+          <div class="modalContent">
             <p>
               <h2>회원탈퇴</h2>계정 정보가 모두 삭제됩니다.
             </p>
-            <div class="button-group">
+            <div class="buttonGroup">
               <button @click="cancelDelete">취소</button>
               <button @click="confirmDelete">확인</button>
             </div>
@@ -123,12 +123,12 @@ const confirmDelete = async () => {
     </header>
 
     <div class="container">
-      <h2 class="page-title">마이페이지</h2>
+      <h2 class="pageTitle">마이페이지</h2>
       <div class="wrapper">
-        <div class="left-box">
+        <div class="leftBox">
           <Profile />
         </div>
-        <div class="right-box">
+        <div class="rightBox">
           <ProfileInput />
         </div>
       </div>
@@ -201,21 +201,21 @@ const confirmDelete = async () => {
   color: black;
 }
 
-.left-box,
-.right-box {
+.leftBox,
+.rightBox {
   width: 50%;
 }
 
-.bottom-box {
+.bottomBox {
   width: 50%;
   background-color: #ffe4e6;
 }
 
-.dark .left-box {
+.dark .leftBox {
   color: black;
 }
 
-.dark .left-box div {
+.dark .leftBox div {
   box-shadow: 8px 8px 16px #646485, -8px -8px 16px #61617d;
 }
 
@@ -252,12 +252,12 @@ const confirmDelete = async () => {
   color: #333;
 }
 
-.page-title {
+.pageTitle {
   font-weight: bold;
   font-size: 1.8em;
 }
 
-.dark .page-title {
+.dark .pageTitle {
   color: #f3f3f3;
 }
 
@@ -295,7 +295,7 @@ const confirmDelete = async () => {
   z-index: 1000;
 }
 
-.modal-content {
+.modalContent {
   background: white;
   padding: 2rem;
   border-radius: 1rem;
@@ -303,14 +303,14 @@ const confirmDelete = async () => {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.button-group {
+.buttonGroup {
   margin-top: 1rem;
   display: flex;
   justify-content: center;
   gap: 1rem;
 }
 
-.button-group button {
+.buttonGroup button {
   padding: 8px 16px;
   border: none;
   border-radius: 0.5rem;
@@ -326,8 +326,8 @@ const confirmDelete = async () => {
     min-width: 500px;
   }
 
-  .left-box,
-  .right-box {
+  .leftBox,
+  .rightBox {
     width: 100%;
   }
 }

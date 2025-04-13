@@ -23,7 +23,10 @@ const mypageClick = () => {
 // 헤더 기능: 로그아웃
 const logout = () => {
   alert('안녕히가세요!');
+
   localStorage.removeItem('loggedInUserId');
+  localStorage.removeItem('loggedInUserInfo');
+
   router.push('/');
 };
 
@@ -51,29 +54,24 @@ const expense = ref(0);
 const balance = ref(0);
 const savingsRate = ref(0);
 const previousExpense = ref(0);
-const budget = ref(0);
+const budget = ref(700000);
 const goalRate = ref(0);
 
 const savingsModalVisible = ref(false);
-
-const openSavingsModal = () => {
-  savingsModalVisible.value = true;
-};
-
-const closeSavingsModal = () => {
-  savingsModalVisible.value = false;
-};
 
 // 모달 토글
 const toggleSavingsModal = () => {
   savingsModalVisible.value = !savingsModalVisible.value;
 };
 
+// 저축률 설정 업데이트 → user 데이터 패치
 const updateSavingsSettings = async ({
   monthlyIncome,
   savingsRate: newRate,
 }) => {
-  console.log('?');
+  income.value = monthlyIncome;
+  savingsRate.value = newRate;
+
   const userId = localStorage.getItem('loggedInUserId');
   if (userId) {
     await axios.patch(`http://localhost:3000/user/${userId}`, {
@@ -81,11 +79,9 @@ const updateSavingsSettings = async ({
     });
     goalRate.value = newRate;
   }
-  console.log('!');
-  // closeSavingsModal();
-  savingsModalVisible.value = false;
 };
 
+// DB에서 월간 데이터 fetch
 const fetchMonthlyData = async () => {
   try {
     const userId = localStorage.getItem('loggedInUserId');
@@ -95,13 +91,16 @@ const fetchMonthlyData = async () => {
       return;
     }
 
+    // 유저 정보에서 goalSavings 가져오기
     const userRes = await axios.get(`http://localhost:3000/user/${userId}`);
     goalRate.value = userRes.data.goalSavings ?? 0;
 
+    // 전체 거래 데이터에서 해당 유저의 지출/수입 필터
     const res = await axios.get('http://localhost:3000/money');
     const allData = res.data;
     const userData = allData.filter((item) => item.userid === userId);
 
+    // 현재 월과 이전 월 계산
     const now = new Date();
     const currentMonth = now.toISOString().slice(0, 7);
     const previousMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1)
@@ -134,10 +133,6 @@ const fetchMonthlyData = async () => {
     previousExpense.value = prevExpense;
     savingsRate.value =
       totalIncome > 0 ? ((balance.value / totalIncome) * 100).toFixed(1) : 0;
-    budget.value =
-      totalIncome > 0
-        ? Math.floor(totalIncome * (1 - goalRate.value / 100))
-        : 0;
   } catch (err) {
     console.error('데이터 불러오기 실패:', err);
   }
@@ -147,159 +142,152 @@ onMounted(fetchMonthlyData);
 </script>
 
 <template>
-  <div class="dashboard">
-    <header class="dashboardHeader">
-      <h1 class="dashboardTitle">
-        <img
-          src="/src/assets/icons/logo.png"
-          class="iconImage"
-          @click="goToHome"
-        />Piggy Bank
-      </h1>
-      <div class="flex items-center gap-2 relative">
-        <button @click="toggleDarkMode" class="darkModeButton">
-          {{ isDarkMode ? '☀️' : '🌙' }}
-        </button>
-        <button class="mypageButton" @click="mypageClick">마이페이지</button>
-        <button class="inputValue" @click="openModal">새 거래추가</button>
-        <button class="logout" @click="logout">로그아웃</button>
+  <header class="dashboardHeader">
+    <h1 class="dashboardTitle">
+      <img
+        src="/src/assets/icons/logo.png"
+        class="iconImage"
+        @click="goToHome"
+      />Piggy Bank
+    </h1>
+    <div class="flex items-center gap-2 relative">
+      <button @click="toggleDarkMode" class="darkModeButton">
+        {{ isDarkMode ? '☀️' : '🌙' }}
+      </button>
+      <button class="mypageButton" @click="mypageClick">마이페이지</button>
+      <button class="inputValue" @click="openModal">새 거래추가</button>
+      <button class="logout" @click="logout">로그아웃</button>
+    </div>
+  </header>
+  <div class="monthlyAnalysisContainer">
+    <!-- 수입, 지출, 잔액, 저축률  -->
+    <div class="summaryCards">
+      <div class="summaryCard">
+        <h3>이번 달 수입</h3>
+        <p class="income">{{ income.toLocaleString() }}원</p>
       </div>
-    </header>
-    <div class="monthlyAnalysisContainer">
-      <div class="summaryCards">
-        <div class="summaryCard">
-          <h3>이번 달 수입</h3>
-          <p class="income">{{ income.toLocaleString() }}원</p>
-        </div>
-        <div class="summaryCard">
-          <h3>이번 달 지출</h3>
-          <p class="expense">{{ expense.toLocaleString() }}원</p>
-        </div>
-        <div class="summaryCard">
-          <h3>이번 달 잔액</h3>
-          <p class="balance">{{ balance.toLocaleString() }}원</p>
-        </div>
+      <div class="summaryCard">
+        <h3>이번 달 지출</h3>
+        <p class="expense">{{ expense.toLocaleString() }}원</p>
+      </div>
+      <div class="summaryCard">
+        <h3>이번 달 잔액</h3>
+        <p class="balance">{{ balance.toLocaleString() }}원</p>
+      </div>
 
-        <!-- 저축률  -->
-        <div class="summaryCard savingsCard" @click="toggleSavingsModal">
-          <h3>저축률</h3>
-          <div class="savingsContent">
-            <div class="savingsSection">
-              <p class="savingsRate">{{ savingsRate }}%</p>
-              <p class="savingsLabel">현재 저축률</p>
-            </div>
-            <div class="divider"></div>
-            <div class="savingsSection">
-              <p class="goalRate">{{ goalRate }}%</p>
-              <p class="goalLabel">목표 저축률</p>
-            </div>
+      <!-- 저축률  -->
+      <div class="summaryCard savingsCard" @click="toggleSavingsModal">
+        <h3>저축률</h3>
+        <div class="savingsContent">
+          <div class="savingsSection">
+            <p class="savingsRate">{{ savingsRate }}%</p>
+            <p class="savingsLabel">현재 저축률</p>
+          </div>
+          <div class="divider"></div>
+          <div class="savingsSection">
+            <p class="goalRate">{{ goalRate }}%</p>
+            <p class="goalLabel">목표 저축률</p>
           </div>
         </div>
+      </div>
 
-        <SavingsModal
-          v-if="savingsModalVisible"
-          :show="savingsModalVisible"
-          @close="closeSavingsModal"
-          @update="updateSavingsSettings"
+      <!-- 저축률 설정 모달  -->
+      <SavingsModal
+        v-if="savingsModalVisible"
+        :show="savingsModalVisible"
+        @close="toggleSavingsModal"
+        @update="updateSavingsSettings"
+      />
+    </div>
+
+    <div class="monthHeader">
+      <h2>{{ month }}월 {{ year }}년</h2>
+    </div>
+
+    <div class="middleSection">
+      <!-- 이번달 총 지출 -->
+      <div class="partCard totalExpenseCard">
+        <div class="expenseHeader">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <h3>이번달 총 지출</h3>
+        </div>
+        <p class="totalExpense">{{ expense.toLocaleString() }}원</p>
+        <p class="comparison">
+          지난 달보다
+          <span class="comparisonMoney">
+            {{ (expense - previousExpense).toLocaleString() }}원
+          </span>
+        </p>
+      </div>
+
+      <!-- 월별 비교 -->
+      <div class="partCard">
+        <h2>월별 비교</h2>
+        <ChartCard
+          chartType="bar"
+          :chartData="{
+            labels: ['지난 달', '이번 달'],
+            datasets: [
+              {
+                label: '지출',
+                data: [previousExpense, expense],
+                backgroundColor: '#ffc7ef',
+              },
+              {
+                label: '수입',
+                data: [1000000, income],
+                backgroundColor: '#ffe8fc',
+              },
+            ],
+          }"
+          :options="{
+            plugins: {
+              legend: { display: true },
+            },
+            scales: {
+              x: { stacked: true },
+              y: { stacked: true },
+            },
+          }"
         />
       </div>
 
-      <div class="monthHeader">
-        <h2>{{ month }}월 {{ year }}년</h2>
-      </div>
-
-      <div class="middleSection">
-        <!-- 이번달 총 지출 -->
-        <div class="partCard totalExpenseCard">
-          <div class="expenseHeader">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <h3>이번달 총 지출</h3>
-          </div>
-          <p class="totalExpense">{{ expense.toLocaleString() }}원</p>
-          <p class="comparison">
-            지난 달보다
-            <span class="comparisonMoney">
-              {{ (expense - previousExpense).toLocaleString() }}원
-            </span>
-          </p>
-        </div>
-
-        <!-- 월별 비교 -->
-        <div class="partCard">
-          <h2>월별 수입/지출 비교</h2>
-          <ChartCard
-            chartType="bar"
-            :chartData="{
-              labels: ['지난 달', '이번 달'],
-              datasets: [
-                {
-                  label: '지출',
-                  data: [previousExpense, expense],
-                  backgroundColor: '#ffc7ef',
-                },
-                {
-                  label: '수입',
-                  data: [1000000, income],
-                  backgroundColor: '#ffe8fc',
-                },
-              ],
-            }"
-            :options="{
-              plugins: {
-                legend: { display: true },
+      <!-- 예산 대비 -->
+      <div class="partCard">
+        <h2>예산 대비</h2>
+        <ChartCard
+          chartType="doughnut"
+          :chartData="{
+            labels: ['예산', '실제 지출'],
+            datasets: [
+              {
+                label: '비율',
+                data: [budget - expense, expense],
+                backgroundColor: ['#ffe8fc', '#ffc7ef'],
               },
-              scales: {
-                x: { stacked: true },
-                y: { stacked: true },
-              },
-            }"
-          />
-        </div>
-
-        <!-- 예산 대비 -->
-        <div class="partCard">
-          <h2>예산 대비 지출</h2>
-          <ChartCard
-            chartType="doughnut"
-            :chartData="{
-              labels: ['지출', '남은 예산'],
-              datasets: [
-                {
-                  label: '수입 대비 지출',
-                  data: income > 0 ? [expense, income - expense] : [0, 0],
-                  backgroundColor: ['#ffc7ef', '#ffe8fc'],
-                },
-              ],
-            }"
-          />
-        </div>
+            ],
+          }"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.dashboard {
-  padding: 2rem;
-  margin: 0;
-  background: linear-gradient(to bottom, #fff9fe, #ffffff);
-  font-family: sans-serif;
-  box-sizing: border-box;
-  color: black;
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
-.dark .dashboard {
-  background: linear-gradient(to bottom, #121212, #121212);
-  color: #1a1a2e;
-}
 .monthlyAnalysisContainer {
-  max-width: 1300px;
-  background-color: var(--bg-main);
-  margin: 0 auto;
+  max-width: 1200px;
+  background-color: var(--background-color);
+  margin: auto;
+  padding: 20px;
   display: flex;
   justify-content: center;
   flex-direction: column;
-  width: 100%;
+  gap: 10px;
 }
 
 .summaryCards {
@@ -307,6 +295,7 @@ onMounted(fetchMonthlyData);
   gap: 10px;
   justify-content: space-around;
   margin-bottom: 10px;
+  /* flex-wrap: wrap; */
 }
 
 .summaryCard {
@@ -414,6 +403,7 @@ onMounted(fetchMonthlyData);
 .totalExpenseCard {
   text-align: left;
   padding: 20px;
+  /* background-color: var(--b-color); */
   border-radius: 12px;
 }
 
@@ -451,6 +441,7 @@ onMounted(fetchMonthlyData);
 }
 
 /* 헤더  */
+
 .dashboardHeader {
   display: flex;
   justify-content: space-between;
@@ -465,9 +456,8 @@ onMounted(fetchMonthlyData);
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 30px;
+  font-size: 24px;
   font-weight: bold;
-  color: black;
 }
 .iconImage {
   width: 60px;
@@ -481,7 +471,6 @@ onMounted(fetchMonthlyData);
   gap: 1rem;
 }
 
-/* 다크모드 버튼 */
 .darkModeButton {
   padding: 8px 12px;
   font-size: 1.2rem;
@@ -489,31 +478,9 @@ onMounted(fetchMonthlyData);
   border-radius: 0.5rem;
   cursor: pointer;
 }
-.mypageButton {
-  background-color: rgb(254, 235, 253);
-  border: 1px solid rgb(251, 209, 251);
-  border-radius: 0.5rem;
-  padding: 12px 24px;
-  cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  font: var(--ng-reg-18);
-  color: #333;
-}
-.logout {
-  background-color: rgb(254, 235, 253);
-  border: 1px solid rgb(251, 209, 251);
-  border-radius: 0.5rem;
-  padding: 12px 24px;
-  cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  font: var(--ng-reg-18);
-  color: #333;
-  margin-right: 20px;
-}
 
-/* 새 거래추가 버튼 */
+/* .mypageButton,
+.logout,
 .inputValue {
   background-color: rgb(254, 235, 253);
   border: 1px solid rgb(251, 209, 251);
@@ -522,199 +489,43 @@ onMounted(fetchMonthlyData);
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  font: var(--ng-reg-18);
+  font-weight: 600;
+  color: #333;
+} */
+
+.mypageButton {
+  background-color: rgb(254, 235, 253);
+  border: 1px solid rgb(251, 209, 251);
+  border-radius: 0.5rem;
+  padding: 12px 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  font-weight: 600;
   color: #333;
 }
-.dark {
-  color: black;
-}
-.dark body {
-  background-color: #121212;
-  color: #f5f5f5;
-}
 
-.dark .monthlyAnalysisContainer,
-.dark .totalExpenseCard {
-  background-color: #121212;
-  color: white;
-  box-shadow: 0 2px 4px rgba(255, 255, 255, 0.05);
-}
-.dark .summaryCard,
-.dark .partCard,
-.dark .savingsCard,
-.dark .totalExpenseCard {
-  background-color: #e7e5e4;
-  color: black;
-}
-.dark .dashboardHeader {
-  background-color: #fbcee8;
+.inputValue {
+  background-color: rgb(254, 235, 253);
+  border: 1px solid rgb(251, 209, 251);
+  border-radius: 0.5rem;
+  padding: 12px 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  font-weight: 600;
+  color: #333;
 }
 
-.dark .divider {
-  background-color: #555;
-}
-
-.dark .savingsLabel,
-.dark .goalLabel,
-.dark .comparison {
-  color: black;
-}
-
-.dark canvas {
-  background-color: transparent !important;
-}
-
-/* 반응형  */
-
-@media (max-width: 1024px) {
-  .summaryCards {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .summaryCard {
-    min-width: 45%;
-    margin: 10px 0;
-  }
-
-  .middleSection {
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .partCard {
-    min-width: 100%;
-  }
-
-  .dashboardHeader {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .mypageButton,
-  .inputValue,
-  .logout {
-    font-size: 14px;
-    padding: 10px 18px;
-  }
-
-  .dashboardTitle {
-    font-size: 20px;
-  }
-}
-
-@media (max-width: 768px) {
-  .summaryCards {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .summaryCard {
-    width: 90%;
-  }
-
-  .middleSection {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .partCard {
-    width: 100%;
-  }
-
-  .dashboardHeader {
-    padding: 0.8rem;
-  }
-
-  .dashboardTitle {
-    font-size: 18px;
-    gap: 8px;
-  }
-
-  .iconImage {
-    width: 50px;
-    height: 50px;
-  }
-
-  .darkModeButton {
-    font-size: 1rem;
-    padding: 6px 10px;
-  }
-
-  .mypageButton,
-  .inputValue,
-  .logout {
-    padding: 10px;
-    font-size: 13px;
-    margin-bottom: 6px;
-  }
-
-  .savingsCard {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .savingsContent {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .divider {
-    width: 80%;
-    height: 1px;
-  }
-
-  .monthHeader {
-    margin-left: 0;
-    text-align: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .summaryCard,
-  .partCard {
-    width: 100%;
-    padding: 16px;
-  }
-
-  .dashboardTitle {
-    font-size: 16px;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .iconImage {
-    width: 40px;
-    height: 40px;
-  }
-
-  .mypageButton,
-  .inputValue,
-  .logout {
-    font-size: 12px;
-    padding: 8px;
-  }
-
-  .darkModeButton {
-    font-size: 0.9rem;
-    padding: 5px 8px;
-  }
-
-  .totalExpense {
-    font-size: 22px;
-  }
-
-  .comparison {
-    font-size: 14px;
-  }
-
-  .comparisonMoney {
-    font-size: 18px;
-  }
-
-  .chartContainer {
-    height: 200px;
-  }
+.logout {
+  background-color: rgb(254, 235, 253);
+  border: 1px solid rgb(251, 209, 251);
+  border-radius: 0.5rem;
+  padding: 12px 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  font-weight: 600;
+  color: #333;
 }
 </style>

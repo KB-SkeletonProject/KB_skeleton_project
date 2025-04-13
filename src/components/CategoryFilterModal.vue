@@ -7,12 +7,12 @@ const props = defineProps({
   selectedCategories: Array,
 });
 
-const selected = ref([...props.selectedCategories]);
+const selectedCategoriesInternal = ref([...props.selectedCategories]);
 
 watch(
   () => props.selectedCategories,
   (newVal) => {
-    selected.value = [...newVal];
+    selectedCategoriesInternal.value = [...newVal];
   }
 );
 
@@ -20,31 +20,38 @@ const allCategories = props.categories;
 </script>
 
 <template>
-  <div class="modal-backdrop" @click.self="$emit('close')">
-    <div class="modal-card">
-      <h3 class="modal-title">카테고리 선택</h3>
+  <div class="modalBackdrop" @click.self="$emit('close')">
+    <div class="modalCard">
+      <h3 class="modalTitle">카테고리 선택</h3>
       <div class="checkboxes">
         <label
           v-for="category in allCategories"
           :key="category"
-          class="checkbox-item"
+          class="checkboxItem"
         >
-          <input type="checkbox" v-model="selected" :value="category" />
-          <span class="custom-checkbox">{{ category }}</span>
+          <input
+            type="checkbox"
+            v-model="selectedCategoriesInternal"
+            :value="category"
+          />
+          <span class="customCheckbox">{{ category }}</span>
         </label>
       </div>
-      <div class="modal-actions">
-        <button class="apply-btn" @click="$emit('apply', selected)">
+      <div class="modalActions">
+        <button
+          class="applyBtn"
+          @click="$emit('apply', selectedCategoriesInternal)"
+        >
           적용
         </button>
-        <button class="cancel-btn" @click="$emit('close')">닫기</button>
+        <button class="cancelBtn" @click="$emit('close')">닫기</button>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.modal-backdrop {
+.modalBackdrop {
   position: fixed;
   top: 0;
   left: 0;
@@ -57,7 +64,7 @@ const allCategories = props.categories;
   z-index: 999;
 }
 
-.modal-card {
+.modalCard {
   background-color: var(--card-color);
   border-radius: 16px;
   padding: 30px;
@@ -66,7 +73,7 @@ const allCategories = props.categories;
   overflow-y: auto;
 }
 
-.modal-title {
+.modalTitle {
   font: var(--ng-bold-20);
   text-align: center;
   margin-bottom: 24px;
@@ -81,7 +88,7 @@ const allCategories = props.categories;
   margin-bottom: 24px;
 }
 
-.checkbox-item {
+.checkboxItem {
   display: flex;
   align-items: center;
   font: var(--ng-reg-16);
@@ -89,21 +96,21 @@ const allCategories = props.categories;
   gap: 10px;
 }
 
-.checkbox-item input[type='checkbox'] {
+.checkboxItem input[type='checkbox'] {
   accent-color: var(--primary-color);
   width: 16px;
   height: 16px;
   cursor: pointer;
 }
 
-.modal-actions {
+.modalActions {
   display: flex;
   justify-content: space-around;
   gap: 20px;
 }
 
-.apply-btn,
-.cancel-btn {
+.applyBtn,
+.cancelBtn {
   flex: 1;
   padding: 10px 16px;
   border-radius: 8px;
@@ -111,12 +118,12 @@ const allCategories = props.categories;
   font: var(--ng-reg-16);
 }
 
-.apply-btn {
+.applyBtn {
   background-color: var(--primary-color);
   color: white;
 }
 
-.cancel-btn {
+.cancelBtn {
   background-color: #e4e4e4;
   color: var(--text-color);
 }

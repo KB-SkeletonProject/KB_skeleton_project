@@ -103,7 +103,7 @@ const confirmModify = async () => {
   <h3>정보 변경</h3>
   <hr />
   <div class="wrapper">
-    <label class="label-wrapper">연령</label>
+    <label class="labelWrapper">연령</label>
 
     <select v-model="form.age">
       <option value="1">10대</option>
@@ -113,8 +113,8 @@ const confirmModify = async () => {
       <option value="5">50대 이상</option>
     </select>
 
-    <label class="label-wrapper">성별</label>
-    <div class="gender-buttons">
+    <label class="labelWrapper">성별</label>
+    <div class="genderButtons">
       <button
         type="button"
         :class="{ selected: form.gender === '남성' }"
@@ -131,24 +131,24 @@ const confirmModify = async () => {
       </button>
     </div>
 
-    <label class="label-wrapper">비밀번호</label>
-    <div class="input-with-icon">
+    <label class="labelWrapper">비밀번호</label>
+    <div class="inputWithIcon">
       <input
         :type="showPassword ? 'text' : 'password'"
         v-model="form.password"
-        class="input-wrapper"
+        class="inputWrapper"
       />
       <button type="button" @click="toggleShowPassword('password')">
         {{ showPassword ? '숨기기' : '보기' }}
       </button>
     </div>
 
-    <label class="label-wrapper">비밀번호 확인</label>
-    <div class="input-with-icon">
+    <label class="labelWrapper">비밀번호 확인</label>
+    <div class="inputWithIcon">
       <input
         :type="showConfirmPassword ? 'text' : 'password'"
         v-model="form.confirmPassword"
-        class="input-wrapper"
+        class="inputWrapper"
       />
       <button type="button" @click="toggleShowPassword('confirmPassword')">
         {{ showConfirmPassword ? '숨기기' : '보기' }}
@@ -156,20 +156,20 @@ const confirmModify = async () => {
     </div>
 
     <label
-      class="password-check-message"
+      class="passwordCheckMessage"
       :class="{
-        'error-text': !isPasswordMatch,
-        'success-text': isPasswordMatch,
+        errorText: !isPasswordMatch,
+        successText: isPasswordMatch,
       }"
     >
       {{ passwordMatchMessage }}
     </label>
-    <div class="button-box">
-      <button class="init-button" @click="initInfo" :disabled="!isFormChanged">
+    <div class="buttonBox">
+      <button class="initButton" @click="initInfo" :disabled="!isFormChanged">
         초기화
       </button>
       <button
-        class="modify-button"
+        class="modifyButton"
         @click="openModifyModal"
         :disabled="!isFormChanged || !isPasswordMatch"
       >
@@ -177,9 +177,9 @@ const confirmModify = async () => {
       </button>
 
       <div v-if="isModifyModalOpen" class="modal">
-        <div class="modal-content">
+        <div class="modalContent">
           <p>정보를 수정 하시겠습니까?</p>
-          <div class="button-group">
+          <div class="buttonGroup">
             <button @click="cancelModify">취소</button>
             <button @click="confirmModify">확인</button>
           </div>
@@ -190,11 +190,11 @@ const confirmModify = async () => {
 </template>
 
 <style scoped>
-.label-wrapper {
+.labelWrapper {
   display: block;
   margin: 20px 0 2.5px 0;
 }
-.input-wrapper {
+.inputWrapper {
   width: 95%;
   height: 35px;
   padding-left: 10px;
@@ -213,13 +213,13 @@ select {
 }
 
 /* 성별 선택 버튼 */
-.gender-buttons {
+.genderButtons {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
 }
 
-.gender-buttons button {
+.genderButtons button {
   flex: 1;
   padding: 10px;
   border: 1px solid #ddd;
@@ -231,25 +231,25 @@ select {
   color: #333;
 }
 
-.gender-buttons button:hover {
+.genderButtons button:hover {
   background-color: #fbcee8;
   color: black;
 }
 
-.gender-buttons button.selected {
+.genderButtons button.selected {
   background-color: #fbcee8;
   color: black;
   border: 1px solid #fbcee8;
 }
 
 /* 비밀번호 input (비밀번호 보기) */
-.input-with-icon {
+.inputWithIcon {
   position: relative;
   width: 100%;
 }
 
 /* 비밀번호 보기/숨기기 버튼 */
-.input-with-icon button {
+.inputWithIcon button {
   position: absolute;
   right: 20px;
   top: 50%;
@@ -261,24 +261,24 @@ select {
   color: grey;
   z-index: 1;
 }
-.success-text,
-.error-text {
+.successText,
+.errorText {
   display: block;
   margin-top: 10px;
   font-size: 15px;
 }
 
 /* 비밀번호 비교 (일치 -> grey) (불일치 -> red) */
-.error-text {
+.errorText {
   color: red;
 }
-.success-text {
+.successText {
   color: grey;
 }
 
 /* 수정, 초기화 버튼 */
-.modify-button,
-.init-button {
+.modifyButton,
+.initButton {
   width: 49%;
   height: 40px;
   margin-top: 20px;
@@ -288,7 +288,7 @@ select {
   cursor: pointer;
 }
 
-.modify-button {
+.modifyButton {
   margin-left: 5px;
   background-color: #fbcee8;
 }
@@ -305,7 +305,7 @@ select {
   z-index: 1000;
 }
 
-.modal-content {
+.modalContent {
   background: white;
   padding: 2rem;
   border-radius: 1rem;
@@ -313,14 +313,14 @@ select {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.button-group {
+.buttonGroup {
   margin-top: 1rem;
   display: flex;
   justify-content: center;
   gap: 1rem;
 }
 
-.button-group button {
+.buttonGroup button {
   padding: 8px 16px;
   border: none;
   border-radius: 0.5rem;
