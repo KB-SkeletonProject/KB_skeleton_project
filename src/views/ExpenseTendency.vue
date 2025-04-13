@@ -1,30 +1,3 @@
-<template>
-  <div class="dashboard">
-    <!-- Header Section -->
-    <header class="dashboardHeader">
-      <h1 class="dashboardTitle">
-        <img
-          src="/src/assets/icons/logo.png"
-          class="iconImage"
-          @click="goToHome"
-        />Piggy Bank
-      </h1>
-      <div class="flex items-center gap-2 relative">
-        <button @click="toggleDarkMode" class="darkModeButton">
-          {{ isDarkMode ? '☀️' : '🌙' }}
-        </button>
-        <button class="mypageButton" @click="mypageClick">마이페이지</button>
-        <button class="logout" @click="logout">로그아웃</button>
-      </div>
-    </header>
-
-    <!-- Main Content -->
-    <SummaryCards />
-    <MonthlyPatternChart />
-    <router-link to="/Home" class="home-button">홈으로 이동</router-link>
-  </div>
-</template>
-
 <script setup>
 import SummaryCards from '@/components/TendencyCount.vue';
 import MonthlyPatternChart from '@/components/MonthlyTendencyChart.vue';
@@ -34,7 +7,6 @@ import { ref, onMounted } from 'vue';
 const router = useRouter();
 const isDarkMode = ref(localStorage.getItem('darkMode') === 'true'); // 다크모드 상태
 
-// 다크모드 상태 (localStorage 적용)
 onMounted(() => {
   const savedMode = localStorage.getItem('darkMode');
   if (isDarkMode.value) {
@@ -63,6 +35,32 @@ const logout = () => {
 };
 </script>
 
+<template>
+  <div class="dashboard">
+    <!-- Header Section -->
+    <header class="dashboardHeader">
+      <h1 class="dashboardTitle">
+        <img
+          src="/src/assets/icons/logo.png"
+          class="iconImage"
+          @click="goToHome"
+        />Piggy Bank
+      </h1>
+      <div class="flex items-center gap-2 relative">
+        <button @click="toggleDarkMode" class="darkModeButton">
+          {{ isDarkMode ? '☀️' : '🌙' }}
+        </button>
+        <button class="mypageButton" @click="mypageClick">마이페이지</button>
+        <button class="logout" @click="logout">로그아웃</button>
+      </div>
+    </header>
+
+    <SummaryCards />
+    <MonthlyPatternChart />
+    <router-link to="/Home" class="home-button">홈으로 이동</router-link>
+  </div>
+</template>
+
 <style scoped>
 .dark .dashboard {
   background: linear-gradient(to bottom, #121212, #121212);
@@ -76,7 +74,6 @@ const logout = () => {
   transition: all 0.3s ease;
 }
 
-/* 헤더 스타일 */
 .dashboardHeader {
   display: flex;
   justify-content: space-between;
@@ -103,7 +100,6 @@ const logout = () => {
   gap: 1rem;
 }
 
-/* 다크모드 버튼 */
 .darkModeButton {
   padding: 8px 12px;
   font-size: 1.2rem;
@@ -135,7 +131,6 @@ const logout = () => {
   margin-right: 20px;
 }
 
-/* 새 거래추가 버튼 */
 .inputValue {
   background-color: rgb(254, 235, 253);
   border: 1px solid rgb(251, 209, 251);
@@ -147,7 +142,6 @@ const logout = () => {
   font: var(--ng-reg-18);
   color: #333;
 }
-/* 홈 버튼 */
 .home-button {
   display: block;
   text-align: center;

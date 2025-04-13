@@ -3,7 +3,7 @@
     {
       "id": "1111",
       "userId": "aa@naver.com",
-      "password": "aaaaaaaa",
+      "password": "aaaaaaaaaa",
       "name": "aa",
       "age": 2,
       "gender": "남성",
@@ -281,18 +281,6 @@
       "ageid": 5
     },
     {
-      "id": "6",
-      "userid": "1111",
-      "typeid": 2,
-      "categoryid": 12,
-      "date": "2025-06-01",
-      "amount": 200000,
-      "tendencyid": 2,
-      "payment": 1,
-      "memo": "인형 뽑기",
-      "ageid": 1
-    },
-    {
       "id": "7",
       "userid": "1111",
       "typeid": 2,
@@ -310,9 +298,9 @@
       "typeid": 2,
       "categoryid": 2,
       "date": "2025-01-15",
-      "amount": 300000,
+      "amount": 3000000,
       "tendencyid": 1,
-      "payment": 3,
+      "payment": 1,
       "memo": "1월 중순 교육비",
       "ageid": 4
     },
@@ -1130,6 +1118,18 @@
       "tendencyid": 3,
       "payment": 4,
       "memo": "알바비",
+      "ageid": 2
+    },
+    {
+      "id": "35db",
+      "userid": "1111",
+      "typeid": 2,
+      "categoryid": 6,
+      "date": "2025-04-13",
+      "amount": 4500,
+      "tendencyid": 2,
+      "payment": 1,
+      "memo": "아아",
       "ageid": 2
     }
   ],

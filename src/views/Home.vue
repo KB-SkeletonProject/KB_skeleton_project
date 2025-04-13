@@ -589,6 +589,7 @@ const piggyMessage = computed(() => {
   font: var(--ng-reg-16);
   color: #333;
 }
+
 .dark .dashboard {
   background: linear-gradient(to bottom, #121212, #121212);
   color: #1a1a2e;

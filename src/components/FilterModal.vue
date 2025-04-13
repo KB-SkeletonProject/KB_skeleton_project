@@ -61,42 +61,41 @@ const isCategorySelected = (category) => {
 };
 </script>
 <template>
-  <div v-show="isOpen" class="modal-backdrop">
-    <div class="modal-content">
-      <div class="modal-header">
+  <div v-show="isOpen" class="modalBackdrop">
+    <div class="modalContent">
+      <div class="modalHeader">
         <h3 class="title">상세 필터</h3>
         <i class="fa-solid fa-xmark close-icon" @click="$emit('close')"></i>
       </div>
-      <div class="modal-body">
+      <div class="modalBody">
         <!-- 날짜 필터 -->
-        <div class="filter-section">
+        <div class="filterSection">
           <label>기간 선택</label>
-          <div class="date-range">
-            <input type="date" v-model="startDate" class="input-field" />
+          <div class="dateRange">
+            <input type="date" v-model="startDate" class="inputField" />
             <span>~</span>
-            <input type="date" v-model="endDate" class="input-field" />
+            <input type="date" v-model="endDate" class="inputField" />
           </div>
         </div>
-        <div class="line-divider"></div>
+        <div class="lineDivider"></div>
         <!-- 구분 필터 -->
-        <div class="filter-section">
+        <div class="filterSection">
           <label>구분</label>
-          <select v-model="selectedType" class="select-box">
+          <select v-model="selectedType" class="selectBox">
             <option value="all">전체</option>
             <option value="income">수입</option>
             <option value="expense">지출</option>
           </select>
         </div>
-        <!-- <div class="line-divider"></div> -->
-        <!-- 카테고리 필터 -->
-        <div v-if="selectedType !== 'all'" class="filter-section">
+
+        <div v-if="selectedType !== 'all'" class="filterSection">
           <label>카테고리</label>
-          <div class="category-buttons">
+          <div class="categoryButtons">
             <button
               v-for="category in categories[selectedType]"
               :key="category"
               :class="[
-                'category-btn',
+                'categoryBtn',
                 isCategorySelected(category) ? 'selected' : '',
               ]"
               @click="toggleCategory(category)"
@@ -106,15 +105,16 @@ const isCategorySelected = (category) => {
           </div>
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="apply-btn" @click="applyFilter">완료</button>
-        <button class="cancel-btn" @click="$emit('close')">취소</button>
+      <div class="modalFooter">
+        <button class="applyBtn" @click="applyFilter">완료</button>
+        <button class="cancelBtn" @click="$emit('close')">취소</button>
       </div>
     </div>
   </div>
 </template>
+
 <style scoped>
-.modal-backdrop {
+.modalBackdrop {
   position: fixed;
   top: 0;
   left: 0;
@@ -126,7 +126,7 @@ const isCategorySelected = (category) => {
   align-items: center;
   z-index: 1000;
 }
-.modal-content {
+.modalContent {
   background-color: var(--background-color);
   padding: 30px 30px;
   border-radius: 16px;
@@ -138,7 +138,7 @@ const isCategorySelected = (category) => {
   gap: 12px;
 }
 
-.dark .modal-content {
+.dark .modalContent {
   background-color: #1f2937;
   color: white;
   padding: 30px 30px;
@@ -150,7 +150,8 @@ const isCategorySelected = (category) => {
   flex-direction: column;
   gap: 12px;
 }
-.modal-header {
+
+.modalHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -165,32 +166,32 @@ const isCategorySelected = (category) => {
 .dark .title {
   color: white;
 }
-.close-icon {
+.closeIcon {
   cursor: pointer;
   font-size: 28px;
   color: var(--text-secondary);
 }
 
-.modal-body {
+.modalBody {
   margin: 10px 0;
 }
-.filter-section {
+.filterSection {
   margin-bottom: 18px;
 }
-.filter-section label {
+.filterSection label {
   font: var(--ng-reg-15);
   color: var(--text-color);
   margin-bottom: 8px;
   display: block;
 }
-.dark .filter-section label {
+.dark .filterSection label {
   font: var(--ng-reg-15);
   color: white;
   margin-bottom: 8px;
   display: block;
 }
-.input-field,
-.select-box {
+.inputField,
+.selectBox {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
@@ -199,24 +200,24 @@ const isCategorySelected = (category) => {
   font: var(--ng-reg-15);
   background-color: #f4f4f4;
 }
-.input-field:focus,
-.select-box:focus {
+.inputField:focus,
+.selectBox:focus {
   outline: none;
   border-color: var(--primary-color);
   background-color: #fff;
 }
-.date-range {
+.dateRange {
   display: flex;
   gap: 10px;
   align-items: center;
 }
-.modal-footer {
+.modalFooter {
   display: flex;
   justify-content: center;
   gap: 20px;
   margin: 20px 0;
 }
-button {
+.button {
   width: 100px;
   height: 35px;
   padding: 10px 20px;
@@ -226,34 +227,34 @@ button {
   cursor: pointer;
   transition: all 0.2s ease;
 }
-.cancel-btn,
-.apply-btn {
+.cancelBtn,
+.applyBtn {
   background-color: #f4f4f4;
   color: var(--text-color);
   border: 1px solid transparent;
 }
-.dark .cancel-btn,
-.dark .apply-btn {
+.dark .cancelBtn,
+.dark .applyBtn {
   background-color: #f4f4f4;
   color: black;
   border: 1px solid transparent;
 }
 
-.cancel-btn.selected,
-.apply-btn.selected {
+.cancelBtn.selected,
+.applyBtn.selected {
   background-color: var(--primary-color);
   color: var(--text-white);
 }
-.line-divider {
+.lineDivider {
   border-top: 1px solid #e0e0e0;
   margin: 12px 0;
 }
-.category-buttons {
+.categoryButtons {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
 }
-.category-btn {
+.categoryBtn {
   padding: 8px 14px;
   margin: 5px 0;
   background-color: #f4f4f4;
@@ -261,11 +262,11 @@ button {
   cursor: pointer;
 }
 
-.category-btn.selected {
+.categoryBtn.selected {
   background-color: var(--primary-color);
   color: var(--text-white);
 }
-.select-box {
+.selectBox {
   font: var(--ng-reg-14);
   background-color: #f4f4f4;
 }

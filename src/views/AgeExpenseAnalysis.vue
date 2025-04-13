@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import ExpenseChart from '../components/ExpenseChart.vue';
-import CategoryFilterModal from '../components/CategoryFilterModal.vue';
+import { useRouter } from 'vue-router';
 
 const allLabels = [
   '식사/카페',
@@ -17,7 +17,7 @@ const allLabels = [
   '기타지출',
 ];
 
-//  필터 모달 제어
+// 필터 모달 제어
 const selectedCategories = ref([...allLabels]);
 const isFilterModalOpen = ref(false);
 const openFilterModal = () => (isFilterModalOpen.value = true);
@@ -27,13 +27,20 @@ const applyFilter = (newSelection) => {
   closeFilterModal();
 };
 
-// 카테고리 이름을 id로부터 매핑 함수
+const moneyData = ref([]);
+const userList = ref([]);
+const categoryList = ref([]);
+const currentUser = ref(null);
+const mySpending = ref({});
+const avgSpending = ref({});
+
+// 카테고리 이름 매핑
 const getCategoryNameById = (id) => {
   const found = categoryList.value.find((cat) => cat.id === id);
   return found ? found.name : '';
 };
 
-// 데이터 불러오기 및 분석 계산
+// 데이터 불러오기 및 분석
 onMounted(async () => {
   try {
     const loggedInUserId = localStorage.getItem('loggedInUserId');
@@ -56,20 +63,22 @@ onMounted(async () => {
     if (!currentUser.value) return;
 
     const ageGroup = currentUser.value.age;
-    const categoryIds = categoryList.value.map((cat) => cat.id);
 
-    // 초기화
+    const expenseCategoryIds = categoryList.value
+      .filter((cat) => Number(cat.id) >= 6)
+      .map((cat) => String(cat.id));
+
     mySpending.value = {};
     avgSpending.value = {};
-    categoryIds.forEach((id) => {
+    expenseCategoryIds.forEach((id) => {
       mySpending.value[id] = 0;
       avgSpending.value[id] = 0;
     });
 
-    selectedCategories.value = [...categoryIds];
+    selectedCategories.value = [...expenseCategoryIds];
 
     const myExpenses = moneyData.value.filter(
-      (m) => m.userid === loggedInUserId && m.typeid === 2
+      (m) => m.userid === loggedInUserId && m.typeid == 2
     );
 
     const sameAgeUsers = userList.value
@@ -77,21 +86,21 @@ onMounted(async () => {
       .map((u) => u.id);
 
     const ageGroupExpenses = moneyData.value.filter(
-      (m) => sameAgeUsers.includes(m.userid) && m.typeid === 2
+      (m) => sameAgeUsers.includes(m.userid) && m.typeid == 2
     );
 
-    categoryIds.forEach((id) => {
-      // 내 지출 합산
+    expenseCategoryIds.forEach((id) => {
+      const idNum = Number(id);
+
       mySpending.value[id] = myExpenses
-        .filter((m) => m.categoryid === id)
+        .filter((m) => Number(m.categoryid) === idNum)
         .reduce((sum, cur) => sum + cur.amount, 0);
 
-      // 같은 연령대 평균 지출 계산
-      const groupAmounts = sameAgeExpenses
-        .filter((m) => m.categoryid === id)
+      const groupValues = ageGroupExpenses
+        .filter((m) => Number(m.categoryid) === idNum)
         .map((m) => m.amount);
 
-      avgSpending.value[index] =
+      avgSpending.value[id] =
         groupValues.length > 0
           ? Math.round(
               groupValues.reduce((a, b) => a + b, 0) / groupValues.length
@@ -105,25 +114,19 @@ onMounted(async () => {
 
 // 필터링된 데이터 계산
 const filteredLabels = computed(() =>
-  allLabels.filter((label) => selectedCategories.value.includes(label))
-);
-const filteredMySpending = computed(() =>
-  allLabels
-    .map((label, i) =>
-      selectedCategories.value.includes(label) ? mySpending.value[i] : null
-    )
-    .filter((v) => v !== null)
-);
-const filteredAvgSpending = computed(() =>
-  allLabels
-    .map((label, i) =>
-      selectedCategories.value.includes(label) ? avgSpending.value[i] : null
-    )
-    .filter((v) => v !== null)
+  categoryList.value
+    .filter((cat) => selectedCategories.value.includes(String(cat.id)))
+    .map((cat) => cat.name)
 );
 
-//  헤더
-import { useRouter } from 'vue-router';
+const filteredMySpending = computed(() =>
+  selectedCategories.value.map((id) => mySpending.value[id])
+);
+
+const filteredAvgSpending = computed(() =>
+  selectedCategories.value.map((id) => avgSpending.value[id])
+);
+
 const router = useRouter();
 const isDarkMode = ref(false);
 
@@ -131,21 +134,20 @@ const toggleDarkMode = () => {
   isDarkMode.value = !isDarkMode.value;
   document.documentElement.classList.toggle('dark', isDarkMode.value);
 };
+
 const goToHome = () => router.push('/home');
 const mypageClick = () => router.push('/myPage');
 const logout = () => {
   alert('안녕히가세요!');
-
   localStorage.removeItem('loggedInUserId');
   localStorage.removeItem('loggedInUserInfo');
-
   router.push('/');
 };
 </script>
 
 <template>
   <div class="dashboard">
-    <!-- 헤더  -->
+    <!-- Header -->
     <header class="dashboardHeader">
       <h1 class="dashboardTitle">
         <img
@@ -159,48 +161,29 @@ const logout = () => {
           {{ isDarkMode ? '☀️' : '🌙' }}
         </button>
         <button class="mypageButton" @click="mypageClick">마이페이지</button>
-        <button class="inputValue" @click="openTransactionModal">
-          새 거래추가
-        </button>
+        <button class="inputValue" @click="openModal">새 거래추가</button>
+
+        <TransactionModal
+          :isOpen="isModalOpen"
+          :date="selectedDate"
+          @close="closeModal"
+        />
         <button class="logout" @click="logout">로그아웃</button>
       </div>
     </header>
 
-    <!-- 연령대 소비 분석 영역  -->
-    <div class="age-expense-analysis">
+    <div class="ageExpenseAnalysis">
       <ExpenseChart
         :labels="filteredLabels"
-        :my-data="filteredMySpending"
-        :avg-data="filteredAvgSpending"
+        :myData="filteredMySpending"
+        :avgData="filteredAvgSpending"
         :isDarkMode="isDarkMode"
       />
     </div>
   </div>
-
-  <div class="age-expense-analysis">
-    <div class="header">
-      <button @click="openFilterModal" class="filter-button">카테고리</button>
-    </div>
-
-    <ExpenseChart
-      :labels="filteredLabels"
-      :my-data="filteredMySpending"
-      :avg-data="filteredAvgSpending"
-    />
-
-    <CategoryFilterModal
-      v-if="isFilterModalOpen"
-      :isOpen="isFilterModalOpen"
-      :categories="allLabels"
-      :selectedCategories="selectedCategories"
-      @close="closeFilterModal"
-      @apply="applyFilter"
-    />
-  </div>
 </template>
 
 <style scoped>
-/* 기본 대시보드 스타일  */
 .dashboard {
   padding: 2rem;
   margin: 0;
@@ -215,14 +198,12 @@ const logout = () => {
   color: #1a1a2e;
 }
 
-/* 분석 섹션  */
-.age-expense-analysis {
+.ageExpenseAnalysis {
   padding: 20px;
   max-width: 1200px;
   margin: auto;
 }
 
-/* 헤더  */
 .dashboardHeader {
   display: flex;
   justify-content: space-between;
@@ -258,12 +239,13 @@ const logout = () => {
   margin-bottom: 24px;
   padding-right: 20px;
 }
-.chart-title {
+
+.chartTitle {
   font: var(--ng-bold-24);
   color: var(--primary-color);
 }
 
-.filter-button {
+.filterButton {
   padding: 8px 16px;
   border: 1px solid var(--primary-color);
   border-radius: 8px;
@@ -273,7 +255,6 @@ const logout = () => {
   cursor: pointer;
 }
 
-/* 공통 버튼 스타일 */
 .mypageButton {
   background-color: rgb(254, 235, 253);
   border: 1px solid rgb(251, 209, 251);
@@ -282,7 +263,7 @@ const logout = () => {
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  font: var(--ng-reg-18);
+  font: var(--ng-reg-16);
   color: #333;
 }
 .logout {
@@ -293,7 +274,7 @@ const logout = () => {
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  font: var(--ng-reg-18);
+  font: var(--ng-reg-16);
   color: #333;
   margin-right: 20px;
 }
@@ -306,11 +287,9 @@ const logout = () => {
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  font-weight: 600;
+  font: var(--ng-reg-16);
   color: #333;
 }
-
-/* 다크모드  */
 
 .dark .dashboard,
 .dark,
@@ -326,18 +305,17 @@ const logout = () => {
   border-radius: 0.5rem;
   cursor: pointer;
 }
-.dark .age-expense-analysis {
-  /* background: linear-gradient(to bottom, #1a1a1a, #121212); */
+.dark .ageExpenseAnalysis {
   color: #f5f5f5;
 }
 
-.dark .filter-button {
+.dark .filterButton {
   background-color: #2c2c2c;
   border: 1px solid #f3daf0;
   color: #f9a8d4;
 }
 
-.dark .chart-title {
+.dark .chartTitle {
   color: #f9a8d4;
 }
 
@@ -370,11 +348,11 @@ const logout = () => {
     font-size: 14px;
   }
 
-  .chart-title {
+  .chartTitle {
     font-size: 20px;
   }
 
-  .age-expense-analysis {
+  .ageExpenseAnalysis {
     padding: 16px;
   }
 }
@@ -404,16 +382,16 @@ const logout = () => {
     padding: 6px 10px;
   }
 
-  .chart-title {
+  .chartTitle {
     font-size: 18px;
   }
 
-  .filter-button {
+  .filterButton {
     font-size: 13px;
     padding: 6px 12px;
   }
 
-  .age-expense-analysis {
+  .ageExpenseAnalysis {
     padding: 10px;
   }
 
@@ -452,17 +430,17 @@ const logout = () => {
     padding: 5px 8px;
   }
 
-  .chart-title {
+  .chartTitle {
     font-size: 16px;
     margin-bottom: 12px;
   }
 
-  .filter-button {
+  .filterButton {
     font-size: 12px;
     padding: 5px 10px;
   }
 
-  .age-expense-analysis {
+  .ageExpenseAnalysis {
     padding: 8px;
   }
 

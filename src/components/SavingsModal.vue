@@ -29,7 +29,6 @@ const confirmSettings = async () => {
     };
     localStorage.setItem('loggedInUserInfo', JSON.stringify(updatedUser));
 
-    // ✅ 확인 후 update만 emit (닫기는 부모가 결정)
     emit('update', {
       savingsRate: savingsRate.value,
     });
@@ -54,14 +53,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="show" class="modal-backdrop" @click="closeModal">
-    <div class="modal-content" @click.stop>
-      <h3 class="modal-title">목표 저축률 설정</h3>
+  <div v-if="show" class="modalBackdrop" @click="closeModal">
+    <div class="modalContent" @click.stop>
+      <h3 class="modalTitle">목표 저축률 설정</h3>
 
-      <!-- 슬라이더로 저축률 설정 -->
-      <div class="slider-container">
+      <div class="sliderContainer">
         <label>목표 저축률 (%)</label>
-        <div class="slider-wrapper">
+        <div class="sliderWrapper">
           <input
             type="range"
             min="0"
@@ -70,14 +68,13 @@ onMounted(() => {
             v-model="savingsRate"
             class="slider"
           />
-          <div class="slider-label">
+          <div class="sliderLabel">
             <span>{{ savingsRate }}%</span>
           </div>
         </div>
       </div>
 
-      <!-- 모달 버튼 -->
-      <div class="modal-buttons">
+      <div class="modalButtons">
         <button class="confirm" @click="confirmSettings">확인</button>
         <button class="cancel" @click="closeModal">취소</button>
       </div>
@@ -86,7 +83,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.modal-backdrop {
+.modalBackdrop {
   position: fixed;
   top: 0;
   left: 0;
@@ -99,7 +96,7 @@ onMounted(() => {
   z-index: 1000;
 }
 
-.modal-content {
+.modalContent {
   background-color: white;
   padding: 30px 30px;
   border-radius: 16px;
@@ -107,13 +104,13 @@ onMounted(() => {
   text-align: center;
 }
 
-.modal-title {
+.modalTitle {
   font: var(--ng-bold-24);
   margin-bottom: 30px;
   color: var(--text-color);
 }
 
-.modal-input {
+.modalInput {
   margin: 20px 0;
 }
 
@@ -125,13 +122,13 @@ input[type='number'] {
   font: var(--ng-reg-16);
 }
 
-.slider-container {
+.sliderContainer {
   margin: 20px 0;
   text-align: center;
   color: black;
 }
 
-.slider-wrapper {
+.sliderWrapper {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -157,23 +154,23 @@ input[type='number'] {
   cursor: pointer;
 }
 
-.slider-label {
+.sliderLabel {
   margin-left: 10px;
   font: var(--ng-bold-20);
   color: black;
 }
 
-.expected-savings {
+.expectedSavings {
   margin: 20px 0;
   color: var(--text-color);
 }
 
-.savings-amount {
+.savingsAmount {
   font: var(--ng-bold-28);
   color: var(--hot-pink);
 }
 
-.modal-buttons {
+.modalButtons {
   margin-top: 20px;
   display: flex;
   gap: 15px;
